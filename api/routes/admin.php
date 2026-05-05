@@ -157,3 +157,41 @@ function handle_admin_student_delete(int $userId): void {
     Logger::info('Admin deleted student', ['student_id' => $userId]);
     send_json(['ok' => true]);
 }
+
+function handle_admin_reset_scores(string $grade): void {
+    require_admin();
+    if (!in_array($grade, ['first', 'second'])) {
+        send_json(['error' => 'مرحلة غير صالحة'], 400);
+    }
+    $pdo  = db();
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE grade_level = ?");
+    $stmt->execute([$grade]);
+    $ids  = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    if (!empty($ids)) {
+        $ph = implode(',', array_fill(0, count($ids), '?'));
+        $pdo->prepare("DELETE FROM lesson_progress WHERE user_id IN ($ph)")->execute($ids);
+        $pdo->prepare("DELETE FROM video_progress  WHERE user_id IN ($ph)")->execute($ids);
+        $pdo->prepare("DELETE FROM student_scores  WHERE user_id IN ($ph)")->execute($ids);
+        $pdo->prepare("UPDATE users SET total_points = 0 WHERE id IN ($ph)")->execute($ids);
+    }
+    $pdo->prepare("DELETE FROM student_scores WHERE user_id IS NULL AND grade_key = ?")->execute([$grade]);
+
+    Logger::info('Admin reset scores', ['grade' => $grade, 'users' => count($ids)]);
+    send_json(['ok' => true, 'affected' => count($ids)]);
+}
+
+function handle_admin_reset_students(string $grade): void {
+    require_admin();
+    if (!in_array($grade, ['first', 'second'])) {
+        send_json(['error' => 'مرحلة غير صالحة'], 400);
+    }
+    $pdo  = db();
+    $stmt = $pdo->prepare("DELETE FROM users WHERE grade_level = ?");
+    $stmt->execute([$grade]);
+    $affected = $stmt->rowCount();
+    $pdo->prepare("DELETE FROM student_scores WHERE user_id IS NULL AND grade_key = ?")->execute([$grade]);
+
+    Logger::info('Admin reset students', ['grade' => $grade, 'deleted' => $affected]);
+    send_json(['ok' => true, 'affected' => $affected]);
+}
