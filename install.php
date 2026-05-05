@@ -263,8 +263,8 @@ ol li, ul li { margin: 6px 0; }
         <div class="warning">
             <strong>للحل:</strong>
             <ol>
-                <li>افتحي <code>api/config.php</code></li>
-                <li>عدّلي قيم <code>DB_NAME</code> و <code>DB_USER</code> و <code>DB_PASS</code></li>
+                <li>انسخي ملف <code>.env.example</code> باسم <code>.env</code></li>
+                <li>عدّلي قيم <code>DB_NAME</code> و <code>DB_USER</code> و <code>DB_PASS</code> في ملف <code>.env</code></li>
                 <li>هذه القيم تحصلين عليها من <strong>Hostinger → Databases → Manage</strong></li>
                 <li>أعيدي تحميل هذه الصفحة</li>
             </ol>

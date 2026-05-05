@@ -37,17 +37,127 @@ function read_json_body(): array {
     return is_array($data) ? $data : [];
 }
 
-// ── التحقق من تسجيل دخول الإدارة ──
+// ── التحقق من تسجيل دخول الإدارة مع CSRF ──
 function require_admin(): void {
     start_session_safe();
     if (empty($_SESSION['is_admin'])) {
         send_json(['error' => 'غير مصرح. يرجى تسجيل الدخول أولاً.'], 401);
     }
+    $reqMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    if (in_array($reqMethod, ['POST', 'PUT', 'DELETE'], true)) {
+        verify_csrf();
+    }
 }
 
-// ── الحصول على معطى من الاستعلام أو الجسم ──
-function param(string $key, $default = null) {
-    if (isset($_GET[$key])) return $_GET[$key];
-    if (isset($_POST[$key])) return $_POST[$key];
-    return $default;
+// ── CSRF Token ──
+function csrf_token(): string {
+    start_session_safe();
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function verify_csrf(): void {
+    start_session_safe();
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    $expected = $_SESSION['csrf_token'] ?? '';
+    if ($expected === '' || !hash_equals($expected, $token)) {
+        send_json(['error' => 'طلب غير صالح (CSRF).'], 403);
+    }
+}
+
+function handle_csrf_token(): void {
+    send_json(['token' => csrf_token()]);
+}
+
+// ── التحقق من صحة عمود user_id في student_scores (migration guard) ──
+function ensure_student_scores_user_id_column(): void {
+    static $checked = false;
+    if ($checked) return;
+    $checked = true;
+
+    $pdo = db();
+    $col = $pdo->query(
+        "SELECT COUNT(*)
+         FROM INFORMATION_SCHEMA.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE()
+           AND TABLE_NAME = 'student_scores'
+           AND COLUMN_NAME = 'user_id'"
+    )->fetchColumn();
+
+    if ((int)$col === 0) {
+        $pdo->exec("ALTER TABLE student_scores ADD COLUMN user_id INT NULL AFTER id");
+    }
+
+    $idx = $pdo->prepare(
+        "SELECT COUNT(*)
+         FROM INFORMATION_SCHEMA.STATISTICS
+         WHERE TABLE_SCHEMA = DATABASE()
+           AND TABLE_NAME = 'student_scores'
+           AND INDEX_NAME = ?"
+    );
+
+    $idx->execute(['uniq_score']);
+    if ((int)$idx->fetchColumn() > 0) {
+        $pdo->exec("ALTER TABLE student_scores DROP INDEX uniq_score");
+    }
+
+    $idx->execute(['idx_score_user']);
+    if ((int)$idx->fetchColumn() === 0) {
+        $pdo->exec("ALTER TABLE student_scores ADD INDEX idx_score_user (user_id)");
+    }
+
+    $idx->execute(['uniq_score_user']);
+    if ((int)$idx->fetchColumn() === 0) {
+        $pdo->exec(
+            "ALTER TABLE student_scores
+             ADD UNIQUE KEY uniq_score_user (user_id, grade_key, unit_index, lesson_index)"
+        );
+    }
+}
+
+/**
+ * Rate limiting مبني على ملفات - يمنع الطلبات المتكررة
+ * يُوقف الطلب تلقائياً بـ 429 إذا تجاوز الحد
+ *
+ * @param string $action  مفتاح العملية (مثل: 'login')
+ * @param int    $limit   أقصى عدد محاولات مسموح
+ * @param int    $window  نافذة الزمن بالثواني
+ */
+function rate_limit(string $action, int $limit = 5, int $window = 900): void {
+    $ip      = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key     = preg_replace('/[^a-z0-9_\-\.]/i', '_', $action . '_' . $ip);
+    $dir     = dirname(__DIR__) . '/logs/rl';
+    $file    = $dir . '/' . $key . '.json';
+
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+
+    $now  = time();
+    $data = ['hits' => [], 'blocked_until' => 0];
+
+    if (is_file($file)) {
+        $raw = @file_get_contents($file);
+        if ($raw) $data = json_decode($raw, true) ?? $data;
+    }
+
+    // إذا كان محظوراً لا تزال المهلة سارية
+    if ($data['blocked_until'] > $now) {
+        $retry = $data['blocked_until'] - $now;
+        header('Retry-After: ' . $retry);
+        send_json(['error' => 'محاولات كثيرة. حاول مجدداً بعد ' . ceil($retry / 60) . ' دقيقة.'], 429);
+    }
+
+    // إزالة الضربات القديمة خارج النافذة
+    $data['hits'] = array_values(array_filter($data['hits'], fn($t) => $t > $now - $window));
+    $data['hits'][] = $now;
+
+    if (count($data['hits']) > $limit) {
+        $data['blocked_until'] = $now + $window;
+        file_put_contents($file, json_encode($data), LOCK_EX);
+        header('Retry-After: ' . $window);
+        send_json(['error' => 'محاولات كثيرة. حاول مجدداً بعد ' . ceil($window / 60) . ' دقيقة.'], 429);
+    }
+
+    file_put_contents($file, json_encode($data), LOCK_EX);
 }

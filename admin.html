@@ -1204,6 +1204,19 @@
     <script>
       const API = "/api";
 
+      // ── CSRF helper ──────────────────────────────────────
+      let csrfToken = '';
+
+      async function apiFetch(url, opts = {}) {
+        const method = (opts.method || 'GET').toUpperCase();
+        if (['POST', 'PUT', 'DELETE'].includes(method)) {
+          opts.headers = opts.headers || {};
+          if (csrfToken) opts.headers['X-CSRF-Token'] = csrfToken;
+        }
+        opts.credentials = opts.credentials ?? 'include';
+        return fetch(url, opts);
+      }
+
       const CUR = {
         first: {
           name: "الأول متوسط",
@@ -1316,6 +1329,7 @@
           });
           const d = await r.json();
           if (d.isAdmin) {
+            if (d.csrf_token) csrfToken = d.csrf_token;
             await openPanel();
           } else {
             showLogin();
@@ -1358,6 +1372,7 @@
           });
           const d = await r.json();
           if (d.success) {
+            if (d.csrf_token) csrfToken = d.csrf_token;
             document.getElementById("login-user").value = "";
             document.getElementById("login-pass").value = "";
             await openPanel();
@@ -1372,10 +1387,8 @@
       }
 
       async function doLogout() {
-        await fetch(`${API}/auth/logout`, {
-          method: "POST",
-          credentials: "include",
-        });
+        await apiFetch(`${API}/auth/logout`, { method: "POST" });
+        csrfToken = '';
         showLogin();
       }
 
@@ -1943,12 +1956,11 @@
           explanation: explanation || null,
         };
         try {
-          const r = await fetch(
+          const r = await apiFetch(
             editId ? `${API}/questions/${editId}` : `${API}/questions`,
             {
               method: editId ? "PUT" : "POST",
               headers: { "Content-Type": "application/json" },
-              credentials: "include",
               body: JSON.stringify(body),
             },
           );
@@ -1971,9 +1983,8 @@
       async function delQ(id) {
         if (!confirm("هل أنت متأكد من حذف هذا السؤال؟")) return;
         try {
-          const r = await fetch(`${API}/questions/${id}`, {
+          const r = await apiFetch(`${API}/questions/${id}`, {
             method: "DELETE",
-            credentials: "include",
           });
           if (r.status === 401) {
             showToast("❌ انتهت جلستك", "error");
@@ -2047,10 +2058,9 @@
         try {
           const fd = new FormData();
           fd.append('image', file);
-          const r = await fetch(`${API}/upload`, {
+          const r = await apiFetch(`${API}/upload`, {
             method: 'POST',
-            credentials: 'include',
-            body: fd
+            body: fd,
           });
           const d = await r.json();
           if (!r.ok) {
@@ -2333,10 +2343,9 @@
       async function confirmBulkImport() {
         if (parsedRows.length === 0) return;
         try {
-          const r = await fetch(`${API}/questions/bulk`, {
+          const r = await apiFetch(`${API}/questions/bulk`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
             body: JSON.stringify({
               grade_key: grade,
               unit_index: selU,
@@ -2428,10 +2437,9 @@
         const content  = document.getElementById("lesson-content-editor").value.trim();
         const videoUrl = document.getElementById("lesson-video-url").value.trim();
         try {
-          const r = await fetch(`${API}/lessons/content`, {
+          const r = await apiFetch(`${API}/lessons/content`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
             body: JSON.stringify({
               grade_key:    grade,
               unit_index:   selU,
@@ -2456,10 +2464,9 @@
         document.getElementById("lesson-content-editor").value = "";
         document.getElementById("content-status").textContent = "جاري الحذف...";
         try {
-          await fetch(`${API}/lessons/content`, {
+          await apiFetch(`${API}/lessons/content`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            credentials: "include",
             body: JSON.stringify({
               grade_key: grade,
               unit_index: selU,
@@ -2689,10 +2696,9 @@
         for (const key of Object.keys(groups)) {
           const grp = groups[key];
           try {
-            const r = await fetch(`${API}/questions/bulk`, {
+            const r = await apiFetch(`${API}/questions/bulk`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              credentials: "include",
               body: JSON.stringify({
                 grade_key: g,
                 unit_index: grp.unit_index,
@@ -2885,8 +2891,8 @@
       async function deleteStudent(id, name) {
         if (!confirm(`هل أنت متأكدة من حذف حساب "${name}"؟\nسيُحذف تقدمها ونقاطها نهائياً.`)) return;
         try {
-          const r = await fetch(`${API}/admin/students/${id}`, {
-            method: 'DELETE', credentials: 'include',
+          const r = await apiFetch(`${API}/admin/students/${id}`, {
+            method: 'DELETE',
           });
           if (r.ok) {
             showToast(`✅ تم حذف "${name}"`);
@@ -3075,9 +3081,10 @@
             if (_cMode === 'lesson-edit') body.lesson_index = _cLessonIdx;
             else body.hardcoded_count = CUR[grade].units[_cUnitIdx].lessons.length;
           }
-          const r = await fetch(url, {
-            method: 'PUT', headers: { 'Content-Type': 'application/json' },
-            credentials: 'include', body: JSON.stringify(body),
+          const r = await apiFetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
           });
           const d = await r.json();
           if (!r.ok) { showToast('❌ ' + (d.error || 'خطأ'), 'error'); return; }
