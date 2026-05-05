@@ -346,20 +346,6 @@
         stroke-width: 2;
       }
 
-      .lb-on {
-        background: linear-gradient(135deg, #7c3aed, #ec4899);
-        color: white;
-      }
-      .lb-off {
-        background: rgba(124, 58, 237, 0.06);
-        color: #94a3b8;
-        border: 1px solid rgba(124, 58, 237, 0.15);
-      }
-      .lb-off:hover {
-        background: rgba(124, 58, 237, 0.12);
-        color: #7c3aed;
-      }
-
       .lb-card {
         background: white;
         border: 1px solid rgba(124, 58, 237, 0.08);
@@ -406,14 +392,6 @@
       #app-wrapper {
         padding-bottom: max(88px, calc(env(safe-area-inset-bottom) + 88px));
         scroll-behavior: smooth;
-      }
-
-      @media (max-width: 479px) {
-        #lb-tab-first,
-        #lb-tab-second {
-          flex: 1;
-          text-align: center;
-        }
       }
 
       .glass-bottom-nav {
@@ -680,7 +658,7 @@
         class="px-4 py-8 md:py-10"
         style="background: #fffbf7"
       >
-        <div class="max-w-lg mx-auto">
+        <div class="max-w-3xl mx-auto">
           <div class="flex items-center justify-between mb-1">
             <h2
               class="text-xl md:text-2xl font-black flex items-center gap-2"
@@ -697,26 +675,32 @@
           <p class="text-sm mb-5" style="color: #94a3b8">
             الأكثر تميزاً في كل مرحلة دراسية
           </p>
-          <div class="flex gap-2 justify-center mb-5">
-            <button
-              id="lb-tab-first"
-              onclick="switchLbTab('first')"
-              class="lb-tab lb-on px-4 py-2.5 rounded-2xl font-bold text-sm transition-all"
-            >
-              📘 الأول متوسط
-            </button>
-            <button
-              id="lb-tab-second"
-              onclick="switchLbTab('second')"
-              class="lb-tab lb-off px-4 py-2.5 rounded-2xl font-bold text-sm transition-all"
-            >
-              📗 الثاني متوسط
-            </button>
-          </div>
-          <div id="lb-body" class="space-y-2.5">
-            <div class="text-center py-8 text-sm" style="color: #94a3b8">
-              جاري تحميل الإحصائيات...
+
+          <!-- لوحتا الشرف جنباً إلى جنب -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <!-- أول متوسط -->
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xl">📘</span>
+                <span class="font-black text-sm" style="color:#2563eb">أول متوسط</span>
+              </div>
+              <div id="lb-body-first" class="space-y-2">
+                <div class="text-center py-8 text-sm" style="color:#94a3b8">جاري التحميل...</div>
+              </div>
             </div>
+
+            <!-- ثاني متوسط -->
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xl">📗</span>
+                <span class="font-black text-sm" style="color:#059669">ثاني متوسط</span>
+              </div>
+              <div id="lb-body-second" class="space-y-2">
+                <div class="text-center py-8 text-sm" style="color:#94a3b8">جاري التحميل...</div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -2784,7 +2768,6 @@
 
       let currentGrade = null;
       let currentUnitIndex = null;
-      let currentLeaderboardGrade = "first";
       let _pendingGrade = null;
       const APP_SECTIONS = [
         "hero-section",
@@ -3456,22 +3439,9 @@
       }
 
       // ── لوحة المتصدرين ────────────────────────────────────
-      function switchLbTab(grade) {
-        currentLeaderboardGrade = grade;
-        const on = ["first", "second"];
-        on.forEach((g) => {
-          const btn = document.getElementById("lb-tab-" + g);
-          if (g === grade) {
-            btn.className = btn.className.replace("lb-off", "lb-on");
-          } else {
-            btn.className = btn.className.replace("lb-on", "lb-off");
-          }
-        });
-        loadLeaderboard(grade);
-      }
-
       async function loadLeaderboard(grade) {
-        const body = document.getElementById("lb-body");
+        const bodyId = grade === "first" ? "lb-body-first" : "lb-body-second";
+        const body = document.getElementById(bodyId);
         if (!body) return;
         body.innerHTML =
           '<div class="text-center text-slate-500 py-8 text-sm">جاري التحميل...</div>';
@@ -3479,15 +3449,19 @@
           const resp = await fetch("/api/scores/leaderboard?gradeKey=" + grade);
           if (!resp.ok) throw new Error("fetch error");
           const rows = await resp.json();
-          renderLeaderboard(rows);
+          renderLeaderboard(rows, body);
         } catch (e) {
           body.innerHTML =
             '<div class="text-center text-slate-600 py-8 text-sm">تعذّر تحميل البيانات</div>';
         }
       }
 
-      function renderLeaderboard(rows) {
-        const body = document.getElementById("lb-body");
+      function loadAllLeaderboards() {
+        loadLeaderboard("first");
+        loadLeaderboard("second");
+      }
+
+      function renderLeaderboard(rows, body) {
         if (!rows || rows.length === 0) {
           body.innerHTML =
             '<div class="text-center text-slate-500 py-8 text-sm">لا توجد نتائج حتى الآن — كوني أول المتصدرات! 🌟</div>';
@@ -3545,7 +3519,7 @@
       }
 
       // تهيئة: تحميل المتصدرين عند فتح الصفحة
-      loadLeaderboard("first");
+      loadAllLeaderboards();
 
       // ══════════════════════════════════════════════════════
       // نظام المصادقة والتقدم

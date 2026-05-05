@@ -1114,24 +1114,61 @@
         <!-- ══════════════════════════════════════════════════ -->
         <div id="stats-view" class="hidden">
 
-          <!-- بطاقات الإجمالي -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-            <div class="card text-center py-4">
-              <div class="text-3xl font-black mb-1" style="color:#7c3aed" id="s-students">—</div>
-              <div class="text-xs" style="color:#94a3b8">طالبة مسجّلة 👩‍🎓</div>
+          <!-- بطاقات الإحصائيات لكل مرحلة -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+
+            <!-- أول متوسط -->
+            <div class="card" style="border:1px solid rgba(37,99,235,0.18)">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">📘</span>
+                <span class="font-black" style="color:#2563eb">أول متوسط</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="text-center rounded-xl py-2" style="background:rgba(37,99,235,0.06)">
+                  <div class="text-2xl font-black" style="color:#2563eb" id="s-first-students">—</div>
+                  <div class="text-xs" style="color:#94a3b8">طالبة 👩‍🎓</div>
+                </div>
+                <div class="text-center rounded-xl py-2" style="background:rgba(16,185,129,0.06)">
+                  <div class="text-2xl font-black" style="color:#10b981" id="s-first-completions">—</div>
+                  <div class="text-xs" style="color:#94a3b8">درس مكتمل ✅</div>
+                </div>
+                <div class="text-center rounded-xl py-2" style="background:rgba(5,150,105,0.06)">
+                  <div class="text-2xl font-black" style="color:#059669" id="s-first-videos">—</div>
+                  <div class="text-xs" style="color:#94a3b8">فيديو 📹</div>
+                </div>
+                <div class="text-center rounded-xl py-2" style="background:rgba(236,72,153,0.06)">
+                  <div class="text-2xl font-black" style="color:#ec4899" id="s-first-points">—</div>
+                  <div class="text-xs" style="color:#94a3b8">نقطة ⭐</div>
+                </div>
+              </div>
             </div>
-            <div class="card text-center py-4">
-              <div class="text-3xl font-black mb-1" style="color:#10b981" id="s-completions">—</div>
-              <div class="text-xs" style="color:#94a3b8">درس مكتمل ✅</div>
+
+            <!-- ثاني متوسط -->
+            <div class="card" style="border:1px solid rgba(5,150,105,0.18)">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">📗</span>
+                <span class="font-black" style="color:#059669">ثاني متوسط</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="text-center rounded-xl py-2" style="background:rgba(5,150,105,0.06)">
+                  <div class="text-2xl font-black" style="color:#059669" id="s-second-students">—</div>
+                  <div class="text-xs" style="color:#94a3b8">طالبة 👩‍🎓</div>
+                </div>
+                <div class="text-center rounded-xl py-2" style="background:rgba(16,185,129,0.06)">
+                  <div class="text-2xl font-black" style="color:#10b981" id="s-second-completions">—</div>
+                  <div class="text-xs" style="color:#94a3b8">درس مكتمل ✅</div>
+                </div>
+                <div class="text-center rounded-xl py-2" style="background:rgba(5,150,105,0.06)">
+                  <div class="text-2xl font-black" style="color:#059669" id="s-second-videos">—</div>
+                  <div class="text-xs" style="color:#94a3b8">فيديو 📹</div>
+                </div>
+                <div class="text-center rounded-xl py-2" style="background:rgba(236,72,153,0.06)">
+                  <div class="text-2xl font-black" style="color:#ec4899" id="s-second-points">—</div>
+                  <div class="text-xs" style="color:#94a3b8">نقطة ⭐</div>
+                </div>
+              </div>
             </div>
-            <div class="card text-center py-4">
-              <div class="text-3xl font-black mb-1" style="color:#059669" id="s-videos">—</div>
-              <div class="text-xs" style="color:#94a3b8">فيديو مُشاهَد 📹</div>
-            </div>
-            <div class="card text-center py-4">
-              <div class="text-3xl font-black mb-1" style="color:#ec4899" id="s-points">—</div>
-              <div class="text-xs" style="color:#94a3b8">نقطة موزّعة ⭐</div>
-            </div>
+
           </div>
 
           <div class="flex flex-col lg:flex-row gap-4">
@@ -2780,10 +2817,21 @@
 
       function renderStats() {
         if (!_statsData) return;
-        document.getElementById('s-students').textContent    = _statsData.students_count;
-        document.getElementById('s-completions').textContent = _statsData.total_completions;
-        document.getElementById('s-videos').textContent      = _statsData.total_videos;
-        document.getElementById('s-points').textContent      = _statsData.total_points;
+
+        const first  = _statsData.students.filter(s => s.grade_level === 'first');
+        const second = _statsData.students.filter(s => s.grade_level === 'second');
+        const sum    = (arr, key) => arr.reduce((a, s) => a + (s[key] || 0), 0);
+
+        document.getElementById('s-first-students').textContent    = first.length;
+        document.getElementById('s-first-completions').textContent = sum(first,  'lessons_done');
+        document.getElementById('s-first-videos').textContent      = sum(first,  'videos_done');
+        document.getElementById('s-first-points').textContent      = sum(first,  'total_points');
+
+        document.getElementById('s-second-students').textContent    = second.length;
+        document.getElementById('s-second-completions').textContent = sum(second, 'lessons_done');
+        document.getElementById('s-second-videos').textContent      = sum(second, 'videos_done');
+        document.getElementById('s-second-points').textContent      = sum(second, 'total_points');
+
         renderStudentsTable();
         renderTopLessons();
         renderLowLessons();
