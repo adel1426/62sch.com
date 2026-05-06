@@ -1,12 +1,14 @@
 <?php
 /**
- * أداة هجرات قاعدة البيانات
+ * Database migration runner.
  *
- * تشغيل من CLI:
+ * CLI:
  *   php api/migrate.php
+ *   php api/migrate.php --file=005_second_grade_curriculum_with_lesson_emojis.sql
  *
- * تشغيل من المتصفح (للمدير فقط بعد تسجيل الدخول):
- *   GET /api/migrate   (يجب إضافة المسار في .htaccess إذا أردت ذلك)
+ * Browser, after admin login:
+ *   GET /api/migrate
+ *   GET /api/migrate?file=005_second_grade_curriculum_with_lesson_emojis.sql
  */
 
 require_once __DIR__ . '/db.php';
@@ -15,7 +17,6 @@ require_once __DIR__ . '/logger.php';
 $isCli = PHP_SAPI === 'cli';
 
 if (!$isCli) {
-    // في المتصفح: حماية بسيطة بكلمة مرور الإدارة
     require_once __DIR__ . '/helpers.php';
     require_admin();
     header('Content-Type: text/plain; charset=utf-8');
@@ -23,63 +24,83 @@ if (!$isCli) {
 
 function migrate_log(string $msg): void {
     global $isCli;
-    if ($isCli) {
-        echo $msg . PHP_EOL;
-    } else {
-        echo $msg . "\n";
-        flush();
-    }
+    echo $msg . ($isCli ? PHP_EOL : "\n");
+    if (!$isCli) flush();
+}
+
+function migration_statements(string $sql): array {
+    $sql = preg_replace('/^\s*--.*$/m', '', $sql);
+    return array_values(array_filter(
+        array_map('trim', preg_split('/;\s*(\r?\n|$)/u', $sql)),
+        fn($s) => $s !== ''
+    ));
 }
 
 try {
     $pdo = db();
 
-    // إنشاء جدول تتبع الهجرات إن لم يكن موجوداً
     $pdo->exec("CREATE TABLE IF NOT EXISTS migrations (
         id INT AUTO_INCREMENT PRIMARY KEY,
         filename VARCHAR(200) NOT NULL UNIQUE,
         applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-    // جلب الهجرات المطبّقة مسبقاً
     $applied = $pdo->query("SELECT filename FROM migrations ORDER BY filename")
                    ->fetchAll(PDO::FETCH_COLUMN);
     $applied = array_flip($applied);
 
-    // قراءة ملفات الهجرات بالترتيب
-    $dir   = __DIR__ . '/migrations';
-    $files = glob($dir . '/*.sql');
+    $only = $_GET['file'] ?? null;
+    if ($isCli) {
+        foreach ($_SERVER['argv'] ?? [] as $arg) {
+            if (str_starts_with($arg, '--file=')) {
+                $only = substr($arg, 7);
+            }
+        }
+    }
+
+    if ($only !== null && !preg_match('/^[A-Za-z0-9_.-]+\.sql$/', $only)) {
+        migrate_log('خطأ: اسم ملف الهجرة غير صالح');
+        if ($isCli) exit(1);
+        http_response_code(400);
+        return;
+    }
+
+    $dir = __DIR__ . '/migrations';
+    $files = $only ? [$dir . '/' . $only] : glob($dir . '/*.sql');
     sort($files);
 
     $ran = 0;
     foreach ($files as $file) {
+        if (!is_file($file)) {
+            migrate_log('خطأ: ملف الهجرة غير موجود: ' . basename($file));
+            if ($isCli) exit(1);
+            http_response_code(404);
+            return;
+        }
+
         $name = basename($file);
+        if (!$only && str_contains($name, 'clear_all_content')) {
+            migrate_log("  [تخطي ملف خطير] $name");
+            continue;
+        }
+
         if (isset($applied[$name])) {
-            migrate_log("  [تم مسبقاً] $name");
+            migrate_log("  [تم مسبقًا] $name");
             continue;
         }
 
         migrate_log("  [تطبيق] $name ...");
-        $sql = file_get_contents($file);
+        $statements = migration_statements(file_get_contents($file));
 
-        // تقسيم على نهايات الجمل
-        $statements = array_filter(
-            array_map('trim', preg_split('/;\s*(\n|$)/u', $sql)),
-            fn($s) => $s !== ''
-        );
-
-        $pdo->beginTransaction();
         try {
             foreach ($statements as $stmt) {
                 $pdo->exec($stmt);
             }
-            $pdo->prepare("INSERT INTO migrations (filename) VALUES (?)")->execute([$name]);
-            $pdo->commit();
+            $pdo->prepare("INSERT IGNORE INTO migrations (filename) VALUES (?)")->execute([$name]);
             Logger::info("Migration applied: $name");
             migrate_log("  [نجح] $name");
             $ran++;
         } catch (Throwable $e) {
-            $pdo->rollBack();
             Logger::error("Migration failed: $name", ['error' => $e->getMessage()]);
             migrate_log("  [خطأ] $name: " . $e->getMessage());
             if ($isCli) exit(1);
@@ -88,13 +109,11 @@ try {
         }
     }
 
-    if ($ran === 0) {
-        migrate_log("لا توجد هجرات جديدة للتطبيق.");
-    } else {
-        migrate_log("تم تطبيق $ran هجرة بنجاح.");
-    }
-
+    migrate_log($ran === 0
+        ? 'لا توجد هجرات جديدة للتطبيق.'
+        : "تم تطبيق $ran هجرة بنجاح."
+    );
 } catch (Throwable $e) {
-    migrate_log("خطأ: " . $e->getMessage());
+    migrate_log('خطأ: ' . $e->getMessage());
     if ($isCli) exit(1);
 }
