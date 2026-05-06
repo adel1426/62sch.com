@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>لوحة إدارة الأسئلة - منصة رحلتك التفاعلية نحو التميز</title>
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
@@ -524,118 +523,6 @@
 
         <div id="grade-insights" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
 
-        <!-- ── تصدير / استيراد كامل المرحلة ── -->
-        <div class="flex gap-2 mb-5">
-          <!-- زر التصدير -->
-          <button
-            onclick="downloadGradeTemplate(grade)"
-            class="grade-slim-btn flex-1"
-            style="
-              border-color: rgba(124, 58, 237, 0.25);
-              background: rgba(124, 58, 237, 0.05);
-              color: #7c3aed;
-            "
-          >
-            <span class="text-2xl">📥</span>
-            <span class="text-sm font-black">تصدير</span>
-            <span class="text-xs leading-tight" style="color: #94a3b8"
-              >جميع دروس المرحلة</span
-            >
-          </button>
-          <!-- زر الاستيراد -->
-          <button
-            onclick="document.getElementById('g-file-'+grade).click()"
-            class="grade-slim-btn flex-1"
-            style="
-              border-style: dashed;
-              border-color: rgba(236, 72, 153, 0.35);
-              background: rgba(236, 72, 153, 0.04);
-              color: #ec4899;
-            "
-          >
-            <span class="text-2xl">📤</span>
-            <span class="text-sm font-black">استيراد</span>
-            <span class="text-xs leading-tight" style="color: #94a3b8"
-              >جميع دروس المرحلة</span
-            >
-          </button>
-          <!-- inputs مخفية لكل صف -->
-          <input
-            type="file"
-            accept=".xlsx,.xls"
-            class="hidden"
-            id="g-file-first"
-            onchange="onGradeExcelFile('first',this)"
-          />
-          <input
-            type="file"
-            accept=".xlsx,.xls"
-            class="hidden"
-            id="g-file-second"
-            onchange="onGradeExcelFile('second',this)"
-          />
-        </div>
-
-        <!-- نتيجة الاستيراد — تظهر تحت الأزرار مباشرة -->
-        <div id="g-preview-first" class="hidden card mb-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span>📘</span>
-            <div
-              id="g-info-first"
-              class="text-sm font-bold"
-              style="color: #2d2640"
-            ></div>
-          </div>
-          <div class="flex gap-2">
-            <button
-              class="btn btn-primary py-2 px-4 text-sm flex-1"
-              onclick="confirmGradeImport('first')"
-              style="background: linear-gradient(135deg, #7c3aed, #ec4899)"
-            >
-              ✅ استيراد للأول متوسط
-            </button>
-            <button
-              class="btn btn-cancel py-2 px-3 text-sm"
-              onclick="clearGradeExcel('first')"
-            >
-              إلغاء
-            </button>
-          </div>
-        </div>
-        <div
-          id="g-result-first"
-          class="hidden rounded-xl p-3 text-sm font-bold mb-4"
-        ></div>
-
-        <div id="g-preview-second" class="hidden card mb-4">
-          <div class="flex items-center gap-2 mb-2">
-            <span>📗</span>
-            <div
-              id="g-info-second"
-              class="text-sm font-bold"
-              style="color: #2d2640"
-            ></div>
-          </div>
-          <div class="flex gap-2">
-            <button
-              class="btn btn-primary py-2 px-4 text-sm flex-1"
-              onclick="confirmGradeImport('second')"
-              style="background: linear-gradient(135deg, #059669, #10b981)"
-            >
-              ✅ استيراد للثاني متوسط
-            </button>
-            <button
-              class="btn btn-cancel py-2 px-3 text-sm"
-              onclick="clearGradeExcel('second')"
-            >
-              إلغاء
-            </button>
-          </div>
-        </div>
-        <div
-          id="g-result-second"
-          class="hidden rounded-xl p-3 text-sm font-bold mb-4"
-        ></div>
 
         <!-- تخطيط رئيسي: شريط جانبي + منطقة محتوى -->
         <div class="flex flex-col lg:flex-row gap-5">
@@ -696,33 +583,6 @@
                   ></div>
                 </div>
                 <div id="sel-count" class="cnt text-base px-3 py-1">—</div>
-              </div>
-
-              <div id="lesson-insights" class="card hidden">
-                <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
-                  <div>
-                    <div class="font-black text-sm" style="color:#7c3aed">لوحة صحة الدرس</div>
-                    <div class="text-xs" style="color:#94a3b8">ملخص سريع يساعدك تعرفين ما يحتاج تحسين قبل نشر الدرس.</div>
-                  </div>
-                  <button onclick="copyLessonChecklist()"
-                          class="text-xs px-3 py-1.5 rounded-xl font-bold"
-                          style="background:rgba(124,58,237,0.08);color:#7c3aed;border:1px solid rgba(124,58,237,0.18)">
-                    نسخ خطة تحسين
-                  </button>
-                </div>
-                <div id="lesson-health-grid" class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3"></div>
-                <div id="lesson-suggestions" class="space-y-2"></div>
-              </div>
-
-              <div id="idea-lab" class="card hidden">
-                <div class="font-black text-sm mb-1" style="color:#ec4899">معمل أفكار الأسئلة</div>
-                <div class="text-xs mb-3" style="color:#94a3b8">اختاري نمطًا، وسأجهز لك قالب سؤال في النموذج لتملئيه بسرعة.</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                  <button class="idea-btn" onclick="applyIdea('misconception')">خطأ شائع</button>
-                  <button class="idea-btn" onclick="applyIdea('challenge')">سؤال تحدي</button>
-                  <button class="idea-btn" onclick="applyIdea('real')">مسألة واقعية</button>
-                  <button class="idea-btn" onclick="applyIdea('visual')">سؤال بصورة</button>
-                </div>
               </div>
 
               <!-- ── تعديل شرح الدرس (قابل للطي) ── -->
@@ -790,12 +650,6 @@
                     >
                       💾 حفظ الشرح والفيديو
                     </button>
-                    <button
-                      class="btn btn-cancel py-2 px-4 text-sm"
-                      onclick="resetContent()"
-                    >
-                      🔄 العودة للشرح الافتراضي
-                    </button>
                   </div>
                 </div>
               </div>
@@ -806,20 +660,7 @@
                   <div class="text-sm font-black" style="color: #2d2640">
                     أسئلة الدرس
                   </div>
-                  <div class="flex gap-2">
-                    <button
-                      class="grade-dl-btn"
-                      id="tpl-dl-btn"
-                      style="
-                        background: rgba(16, 185, 129, 0.07);
-                        color: #059669;
-                        border-color: rgba(16, 185, 129, 0.25);
-                      "
-                      onclick="downloadTemplate()"
-                    >
-                      <span id="tpl-grade-icon">📘</span> تحميل قالب Excel
-                    </button>
-                  </div>
+                  <div></div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-[1fr_190px] gap-2 mb-3">
                   <input id="q-search" class="tool-input" type="search"
@@ -838,103 +679,6 @@
                   <div class="text-center text-slate-500 py-8 text-sm">
                     جاري تحميل الأسئلة...
                   </div>
-                </div>
-              </div>
-
-              <!-- ── استيراد دفعي من Excel ── -->
-              <div class="card">
-                <div
-                  class="flex items-center justify-between collapse-btn"
-                  onclick="toggleSection('xl-body','xl-arrow')"
-                >
-                  <div class="flex items-center gap-2">
-                    <span class="text-lg">📤</span>
-                    <span class="font-black text-sm" style="color: #059669"
-                      >رفع أسئلة من Excel (دفعة واحدة)</span
-                    >
-                  </div>
-                  <span
-                    id="xl-arrow"
-                    class="text-slate-400 font-bold text-lg transition-transform"
-                    >▼</span
-                  >
-                </div>
-                <div id="xl-body" class="hidden mt-4 space-y-3">
-                  <div
-                    class="rounded-xl p-3 text-xs space-y-1"
-                    style="
-                      background: rgba(16, 185, 129, 0.06);
-                      border: 1px solid rgba(16, 185, 129, 0.15);
-                      color: #059669;
-                    "
-                  >
-                    <p class="font-bold">📋 تعليمات:</p>
-                    <p>١. حمّلي القالب بالزر أعلاه</p>
-                    <p>٢. أضيفي الأسئلة في الصفوف (١=أ، ١=ب، ٢=ج، ٣=د)</p>
-                    <p>
-                      ٣. ارفعي الملف هنا — ستُضاف الأسئلة لهذا الدرس تلقائياً
-                    </p>
-                  </div>
-                  <label
-                    class="xl-drop flex flex-col items-center justify-center py-7 px-4 text-center"
-                    id="xl-drop-label"
-                  >
-                    <div id="xl-drop-icon" class="text-3xl mb-2">📊</div>
-                    <div
-                      id="xl-drop-text"
-                      class="font-bold text-sm"
-                      style="color: #059669"
-                    >
-                      اضغطي أو اسحبي ملف Excel هنا
-                    </div>
-                    <div class="text-xs mt-1" style="color: #94a3b8">
-                      .xlsx أو .xls
-                    </div>
-                    <input
-                      id="xl-file-input"
-                      type="file"
-                      accept=".xlsx,.xls"
-                      class="hidden"
-                      onchange="onExcelFile(this)"
-                    />
-                  </label>
-                  <div id="xl-preview" class="hidden space-y-2">
-                    <div
-                      id="xl-preview-info"
-                      class="text-sm font-bold"
-                      style="color: #2d2640"
-                    ></div>
-                    <div
-                      id="xl-rows-preview"
-                      class="space-y-1 max-h-48 overflow-y-auto"
-                    ></div>
-                    <div class="flex gap-2 pt-1">
-                      <button
-                        class="btn btn-primary py-2 px-4 text-sm"
-                        onclick="confirmBulkImport()"
-                        style="
-                          background: linear-gradient(135deg, #059669, #10b981);
-                        "
-                      >
-                        ✅ استيراد الأسئلة
-                      </button>
-                      <button
-                        class="btn btn-cancel py-2 px-4 text-sm"
-                        onclick="clearExcel()"
-                      >
-                        إلغاء
-                      </button>
-                    </div>
-                  </div>
-                  <div
-                    id="xl-result"
-                    class="hidden rounded-xl p-3 text-sm font-bold"
-                    style="
-                      background: rgba(16, 185, 129, 0.08);
-                      color: #059669;
-                      border: 1px solid rgba(16, 185, 129, 0.2);
-                    "
-                  ></div>
                 </div>
               </div>
 
@@ -1017,42 +761,8 @@
                     <label class="block text-sm text-slate-400 mb-1.5"
                       >الصورة (اختياري)</label
                     >
-                    <div class="flex gap-2 mb-2">
-                      <button
-                        type="button"
-                        id="itab-url"
-                        onclick="siTab('url')"
-                        class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all"
-                        style="
-                          background: rgba(124, 58, 237, 0.15);
-                          color: #7c3aed;
-                          border: 1px solid rgba(124, 58, 237, 0.4);
-                        "
-                      >
-                        🔗 رابط URL
-                      </button>
-                      <button
-                        type="button"
-                        id="itab-file"
-                        onclick="siTab('file')"
-                        class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all"
-                        style="
-                          background: rgba(0, 0, 0, 0.04);
-                          color: #94a3b8;
-                          border: 1px solid rgba(0, 0, 0, 0.1);
-                        "
-                      >
-                        📎 رفع ملف
-                      </button>
-                    </div>
-                    <div id="iurl-sec">
-                      <input
-                        id="f-img"
-                        type="text"
-                        placeholder="https://example.com/image.png"
-                      />
-                    </div>
-                    <div id="ifile-sec" class="hidden">
+                    <input id="f-img" type="hidden" />
+                    <div id="ifile-sec">
                       <label
                         class="flex flex-col items-center justify-center w-full h-20 rounded-xl border-2 border-dashed cursor-pointer transition-all"
                         style="
@@ -1408,7 +1118,6 @@
         // إخفاء أزرار الكتابة الثابتة في الصفحة
         [
           'button[onclick*="saveContent"]',
-          'button[onclick*="resetContent"]',
           'button[onclick*="addVideoUrlRow"]',
           'button[onclick*="saveQ"]',
           'button[onclick*="cancelEdit"]',
@@ -1417,7 +1126,6 @@
           'button[onclick*="resetAll"]',
           'button[onclick*="resetCurriculum"]',
           'button[onclick*="handleBulk"]',
-          'button[onclick*="downloadTemplate"]',
           'button[onclick*="onFile"]',
           'button[onclick*="clearImg"]',
         ].forEach(sel =>
@@ -1428,9 +1136,6 @@
         const formCard = document.getElementById('form-title')?.closest('.card');
         if (formCard) formCard.style.display = 'none';
 
-        // إخفاء قسم رفع الأسئلة من Excel
-        const xlCard = document.getElementById('xl-body')?.closest('.card');
-        if (xlCard) xlCard.style.display = 'none';
       }
 
       async function doLogin() {
@@ -1648,11 +1353,9 @@
         buildTree();
         document.getElementById("no-sel").classList.add("hidden");
         document.getElementById("sel-panel").classList.remove("hidden");
-        document.getElementById("lesson-insights").classList.add("hidden");
-        document.getElementById("idea-lab").classList.add("hidden");
         document.getElementById("q-quality-bar")?.classList.add("hidden");
-        // أغلق الأقسام
-        ["content-body","xl-body"].forEach(id => document.getElementById(id).classList.add("hidden"));
+        // أغلق قسم الشرح
+        document.getElementById("content-body")?.classList.add("hidden");
         document.getElementById("content-arrow").textContent = "▼";
 
         const isGrade = type === 'grade';
@@ -1703,18 +1406,15 @@
         document.getElementById("sel-count").textContent = "...";
         document.getElementById("no-sel").classList.add("hidden");
         document.getElementById("sel-panel").classList.remove("hidden");
-        document.getElementById("lesson-insights").classList.remove("hidden");
-        document.getElementById("idea-lab").classList.remove("hidden");
         buildTree();
         updateGradeIcon();
         cancelEdit();
-        clearExcel();
         const qSearch = document.getElementById("q-search");
         const qFilter = document.getElementById("q-filter");
         if (qSearch) qSearch.value = "";
         if (qFilter) qFilter.value = "all";
-        // أغلق الأقسام القابلة للطي عند تغيير الدرس
-        ["content-body", "xl-body"].forEach((id) => {
+        // أغلق قسم الشرح عند تغيير الدرس
+        ["content-body"].forEach((id) => {
           document.getElementById(id).classList.add("hidden");
         });
         document.getElementById("content-arrow").textContent = "▼";
@@ -1737,7 +1437,6 @@
           if (!r.ok) throw new Error();
           questions = await r.json();
           renderQ();
-          updateLessonInsights();
           document.getElementById("sel-count").textContent =
             `${questions.length} سؤال`;
         } catch (e) {
@@ -1752,7 +1451,6 @@
           if (qualityBar) qualityBar.classList.add("hidden");
           el.innerHTML =
             '<div class="text-center py-10"><div class="text-4xl mb-3">📝</div><div style="color:#94a3b8;">لا توجد أسئلة لهذا الدرس بعد</div><div class="text-sm mt-1" style="color:#cbd5e1;">أضف أول سؤال من النموذج أدناه</div></div>';
-          updateLessonInsights();
           return;
         }
         const L = ["أ", "ب", "ج", "د"];
@@ -1811,166 +1509,6 @@
           .join("");
       }
 
-      function getQuestionIssues(q) {
-        const issues = [];
-        const text = (q.question_text || "").trim();
-        const options = [q.option_a, q.option_b, q.option_c, q.option_d]
-          .map((o) => String(o || "").trim());
-        const uniqueOptions = new Set(options.map((o) => o.toLowerCase()));
-        if (text.length < 10) issues.push("نص السؤال قصير");
-        if (!q.explanation || !String(q.explanation).trim()) issues.push("يحتاج شرحًا");
-        if (uniqueOptions.size < 4) issues.push("خيارات مكررة");
-        if (options.some((o) => o.length < 1)) issues.push("خيار فارغ");
-        if (Number(q.correct_answer) < 0 || Number(q.correct_answer) > 3) issues.push("الإجابة الصحيحة غير صالحة");
-        return issues;
-      }
-
-      function getFilteredQuestions() {
-        const term = (document.getElementById("q-search")?.value || "").trim().toLowerCase();
-        const filter = document.getElementById("q-filter")?.value || "all";
-        return questions
-          .map((q, originalIndex) => ({ q, originalIndex }))
-          .filter(({ q }) => {
-            const haystack = [
-              q.question_text, q.option_a, q.option_b, q.option_c, q.option_d, q.explanation,
-            ].join(" ").toLowerCase();
-            if (term && !haystack.includes(term)) return false;
-            if (filter === "no-explanation") return !q.explanation;
-            if (filter === "with-image") return !!q.image_url;
-            if (filter === "no-image") return !q.image_url;
-            if (filter === "needs-work") return getQuestionIssues(q).length > 0;
-            return true;
-          });
-      }
-
-      function renderQualityBar() {
-        const bar = document.getElementById("q-quality-bar");
-        if (!bar) return;
-        const explained = questions.filter((q) => q.explanation).length;
-        const imaged = questions.filter((q) => q.image_url).length;
-        const issueCount = questions.reduce((sum, q) => sum + getQuestionIssues(q).length, 0);
-        bar.innerHTML = `
-          <span class="quality-chip ${questions.length >= LESSON_TARGET ? "quality-good" : "quality-warn"}">${questions.length}/${LESSON_TARGET} سؤال</span>
-          <span class="quality-chip ${explained === questions.length ? "quality-good" : "quality-warn"}">${explained} شرح</span>
-          <span class="quality-chip ${imaged > 0 ? "quality-good" : "quality-warn"}">${imaged} صورة</span>
-          <span class="quality-chip ${issueCount === 0 ? "quality-good" : "quality-danger"}">${issueCount} تنبيه جودة</span>
-        `;
-        bar.classList.remove("hidden");
-      }
-
-      function getLessonSuggestions() {
-        const suggestions = [];
-        const total = questions.length;
-        const explained = questions.filter((q) => q.explanation).length;
-        const imaged = questions.filter((q) => q.image_url).length;
-        const issueCount = questions.reduce((sum, q) => sum + getQuestionIssues(q).length, 0);
-        if (total === 0) {
-          suggestions.push("ابدئي بثلاثة أسئلة: سؤال مباشر، سؤال تطبيق، وسؤال خطأ شائع.");
-        } else if (total < LESSON_TARGET) {
-          suggestions.push(`أضيفي ${LESSON_TARGET - total} أسئلة ليصبح الدرس جاهزًا كبنك تدريب متوازن.`);
-        }
-        if (total > 0 && explained < Math.ceil(total * 0.6)) {
-          suggestions.push("أضيفي شروحًا قصيرة لأغلب الأسئلة، خصوصًا الأسئلة التي يتوقع أن تخطئ فيها الطالبة.");
-        }
-        if (total > 0 && imaged === 0) {
-          suggestions.push("فكرة إبداعية: أضيفي سؤالًا بصريًا واحدًا على الأقل، مثل رسم بياني أو شكل هندسي أو جدول صغير.");
-        }
-        if (issueCount > 0) {
-          suggestions.push("راجعي تنبيهات الجودة داخل البطاقات: الخيارات المكررة أو السؤال القصير يضعف تجربة الاختبار.");
-        }
-        if (suggestions.length === 0) {
-          suggestions.push("الدرس منظم جيدًا. الخطوة التالية: أضيفي سؤال تحدي يميز الطالبات المتقدمات.");
-        }
-        return suggestions;
-      }
-
-      function updateLessonInsights() {
-        const panel = document.getElementById("lesson-insights");
-        const grid = document.getElementById("lesson-health-grid");
-        const suggestionsEl = document.getElementById("lesson-suggestions");
-        if (!panel || !grid || !suggestionsEl || selU < 0 || selL < 0) return;
-        const total = questions.length;
-        const explained = questions.filter((q) => q.explanation).length;
-        const imaged = questions.filter((q) => q.image_url).length;
-        const issueCount = questions.reduce((sum, q) => sum + getQuestionIssues(q).length, 0);
-        const readiness = Math.min(100, Math.round(
-          (Math.min(total, LESSON_TARGET) / LESSON_TARGET) * 55 +
-          (total ? explained / total : 0) * 30 +
-          (imaged > 0 ? 15 : 0)
-        ));
-        grid.innerHTML = `
-          <div class="insight-card">
-            <div class="text-[11px] font-black mb-2" style="color:#94a3b8">الأسئلة</div>
-            <div class="insight-value" style="color:#7c3aed">${total}</div>
-            <div class="text-[11px] mt-1" style="color:#94a3b8">الهدف ${LESSON_TARGET}</div>
-          </div>
-          <div class="insight-card">
-            <div class="text-[11px] font-black mb-2" style="color:#94a3b8">الشروح</div>
-            <div class="insight-value" style="color:#059669">${explained}</div>
-            <div class="text-[11px] mt-1" style="color:#94a3b8">تغذية راجعة</div>
-          </div>
-          <div class="insight-card">
-            <div class="text-[11px] font-black mb-2" style="color:#94a3b8">الوسائط</div>
-            <div class="insight-value" style="color:#ec4899">${imaged}</div>
-            <div class="text-[11px] mt-1" style="color:#94a3b8">صور وأسئلة بصرية</div>
-          </div>
-          <div class="insight-card">
-            <div class="text-[11px] font-black mb-2" style="color:#94a3b8">الجاهزية</div>
-            <div class="insight-value" style="color:${readiness >= 80 ? "#059669" : readiness >= 50 ? "#d97706" : "#ef4444"}">${readiness}%</div>
-            <div class="w-full rounded-full mt-2" style="height:6px;background:rgba(124,58,237,0.1)">
-              <div class="h-full rounded-full" style="width:${readiness}%;background:${readiness >= 80 ? "#10b981" : "linear-gradient(90deg,#f59e0b,#ec4899)"}"></div>
-            </div>
-          </div>`;
-        suggestionsEl.innerHTML = getLessonSuggestions()
-          .map((s) => `<div class="rounded-xl px-3 py-2 text-xs font-bold" style="background:rgba(124,58,237,0.05);color:#4b5563;border:1px solid rgba(124,58,237,0.1)">💡 ${esc(s)}</div>`)
-          .join("");
-        panel.classList.remove("hidden");
-      }
-
-      async function copyLessonChecklist() {
-        const lesson = CUR[grade].units[selU]?.lessons[selL] || "الدرس المحدد";
-        const unit = CUR[grade].units[selU]?.title || "";
-        const text = [
-          `خطة تحسين درس: ${lesson}`,
-          `الوحدة: ${unit}`,
-          "",
-          ...getLessonSuggestions().map((s, i) => `${i + 1}. ${s}`),
-        ].join("\n");
-        try {
-          await navigator.clipboard.writeText(text);
-          showToast("✅ تم نسخ خطة التحسين");
-        } catch {
-          showToast("انسخي الخطة من بطاقة صحة الدرس", "warn");
-        }
-      }
-
-      function applyIdea(type) {
-        const lesson = CUR[grade].units[selU]?.lessons[selL] || "هذا الدرس";
-        const templates = {
-          misconception: {
-            q: `أي العبارات التالية تمثل خطأ شائعًا في ${lesson}؟`,
-            exp: "اشرحي لماذا الخيار الصحيح يعالج الخطأ الشائع، وما سبب خطأ الخيارات الأخرى.",
-          },
-          challenge: {
-            q: `مسألة تحدي: طبقي فكرة ${lesson} في موقف يحتاج أكثر من خطوة.`,
-            exp: "قسّمي الحل إلى خطوات قصيرة حتى تستطيع الطالبة مراجعة طريقة التفكير.",
-          },
-          real: {
-            q: `في موقف من الحياة اليومية، كيف نستخدم ${lesson} لحل المسألة؟`,
-            exp: "اربطي الإجابة بالموقف الواقعي ثم اكتبي العملية أو القاعدة المستخدمة.",
-          },
-          visual: {
-            q: `انظري إلى الصورة/الشكل، ما النتيجة الصحيحة المرتبطة بدرس ${lesson}؟`,
-            exp: "وضحي كيف نقرأ الصورة أو الشكل قبل اختيار الإجابة.",
-          },
-        };
-        const t = templates[type] || templates.real;
-        document.getElementById("f-q").value = t.q;
-        document.getElementById("f-explanation").value = t.exp;
-        document.getElementById("form-title").textContent = "✨ سؤال من معمل الأفكار";
-        document.querySelector(".card:last-child")?.scrollIntoView({ behavior: "smooth" });
-        showToast("✨ جهزت لك قالب سؤال، أكملي الخيارات والإجابة الصحيحة");
-      }
 
       // ── CRUD ─────────────────────────────────────────────
       function startEdit(id) {
@@ -1984,9 +1522,7 @@
         document.getElementById("f-d").value = q.option_d;
         document.getElementById("f-ans").value = q.correct_answer;
         document.getElementById("f-explanation").value = q.explanation || "";
-        document.getElementById("f-img").value = q.image_url || "";
         showImgPrev(q.image_url || "");
-        siTab("url");
         document.getElementById("form-title").textContent = "✏️ تعديل السؤال";
         document.getElementById("btn-cancel").classList.remove("hidden");
         document
@@ -1996,7 +1532,7 @@
 
       function cancelEdit() {
         editId = null;
-        ["f-q", "f-a", "f-b", "f-c", "f-d", "f-explanation", "f-img"].forEach((id) => {
+        ["f-q", "f-a", "f-b", "f-c", "f-d", "f-explanation"].forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.value = "";
         });
@@ -2007,7 +1543,6 @@
         const bc = document.getElementById("btn-cancel");
         if (bc) bc.classList.add("hidden");
         clearImg();
-        siTab("url");
       }
 
       async function saveQ() {
@@ -2096,27 +1631,6 @@
         } else p.classList.add("hidden");
       }
 
-      function siTab(tab) {
-        const tu = document.getElementById("itab-url"),
-          tf = document.getElementById("itab-file");
-        const su = document.getElementById("iurl-sec"),
-          sf = document.getElementById("ifile-sec");
-        const onStyle =
-          "background:rgba(124,58,237,0.15);color:#7C3AED;border:1px solid rgba(124,58,237,0.4);";
-        const offStyle =
-          "background:rgba(0,0,0,0.04);color:#94a3b8;border:1px solid rgba(0,0,0,0.1);";
-        if (tab === "url") {
-          su.classList.remove("hidden");
-          sf.classList.add("hidden");
-          tu.style.cssText = onStyle;
-          tf.style.cssText = offStyle;
-        } else {
-          su.classList.add("hidden");
-          sf.classList.remove("hidden");
-          tf.style.cssText = onStyle;
-          tu.style.cssText = offStyle;
-        }
-      }
 
       async function onFile(input) {
         const file = input.files[0];
@@ -2236,611 +1750,6 @@
         if (el) el.textContent = icon;
       }
 
-      // ── تحميل قالب Excel (يشمل الأسئلة الموجودة) ────────
-      async function downloadTemplate() {
-        const gradeLabel = grade === "first" ? "الأول_متوسط" : "الثاني_متوسط";
-        const unitName = CUR[grade].units[selU]?.title || `وحدة${selU + 1}`;
-        const lessonName =
-          CUR[grade].units[selU]?.lessons[selL] || `درس${selL + 1}`;
-
-        showToast("⏳ جاري تجهيز القالب...");
-
-        // جلب الأسئلة الموجودة لهذا الدرس
-        let existing = [];
-        try {
-          const r = await fetch(
-            `${API}/questions?gradeKey=${grade}&unitIndex=${selU}&lessonIndex=${selL}`,
-            { credentials: "include", cache: "no-store" },
-          );
-          existing = await r.json();
-        } catch {
-          /* ignore */
-        }
-
-        const headers = [
-          "نص_السؤال",
-          "الخيار_أ",
-          "الخيار_ب",
-          "الخيار_ج",
-          "الخيار_د",
-          "الإجابة_الصحيحة (0=أ  1=ب  2=ج  3=د)",
-        ];
-
-        const rows = [
-          ["الصف", CUR[grade].name],
-          ["الوحدة", unitName],
-          ["الدرس", lessonName],
-          [`عدد الأسئلة الموجودة`, existing.length],
-          [],
-          [
-            "── الأسئلة الموجودة في قاعدة البيانات (للمرجع — لا تُرفع مرة أخرى) ──",
-          ],
-          headers,
-        ];
-
-        if (existing.length > 0) {
-          existing.forEach((q, i) => {
-            rows.push([
-              q.question_text,
-              q.option_a,
-              q.option_b,
-              q.option_c,
-              q.option_d,
-              q.correct_answer,
-            ]);
-          });
-        } else {
-          rows.push(["(لا توجد أسئلة محفوظة لهذا الدرس بعد)"]);
-        }
-
-        rows.push([]);
-        rows.push(["── أضيفي الأسئلة الجديدة هنا (هذا القسم فقط يُرفع) ──"]);
-        rows.push(headers);
-        rows.push(["مثال: ما قيمة 2+2؟", "4", "3", "5", "6", "0"]);
-        rows.push([]); // صف فارغ للإضافة
-
-        const ws = XLSX.utils.aoa_to_sheet(rows);
-        ws["!cols"] = [60, 20, 20, 20, 20, 35].map((w) => ({ wch: w }));
-
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "أسئلة");
-        XLSX.writeFile(wb, `أسئلة_${gradeLabel}_${lessonName}.xlsx`);
-        showToast(`✅ تم تحميل القالب (${existing.length} سؤال موجود)`);
-      }
-
-      // ── رفع ملف Excel ────────────────────────────────
-      let parsedRows = [];
-
-      function onExcelFile(input) {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const wb = XLSX.read(e.target.result, { type: "array" });
-            const ws = wb.Sheets[wb.SheetNames[0]];
-            const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
-
-            // ابحث عن قسم "أضيفي الأسئلة الجديدة" أولاً (للقوالب المحمّلة من النظام)
-            // ثم ابحث عن أي رأس يحتوي "نص_السؤال" (للملفات اليدوية)
-            let headerRow = -1;
-            for (let i = 0; i < raw.length; i++) {
-              if (
-                String(raw[i][0]).includes("أضيفي") ||
-                String(raw[i][0]).includes("اضيفي")
-              ) {
-                // الصف التالي هو رأس الأعمدة
-                if (
-                  i + 1 < raw.length &&
-                  String(raw[i + 1][0]).includes("نص")
-                ) {
-                  headerRow = i + 1;
-                  break;
-                }
-              }
-            }
-            // إذا لم يُوجد قسم "أضيفي"، ابحث عن آخر صف رأس (لتجنب أسئلة المرجع)
-            if (headerRow === -1) {
-              for (let i = raw.length - 1; i >= 0; i--) {
-                if (String(raw[i][0]).includes("نص")) {
-                  headerRow = i;
-                  break;
-                }
-              }
-            }
-            const dataStart = headerRow >= 0 ? headerRow + 1 : 1;
-            parsedRows = [];
-            for (let i = dataStart; i < raw.length; i++) {
-              const r = raw[i];
-              const q = String(r[0] || "").trim();
-              const a = String(r[1] || "").trim();
-              const b = String(r[2] || "").trim();
-              const c = String(r[3] || "").trim();
-              const d = String(r[4] || "").trim();
-              const ans = String(r[5] || "").trim();
-              if (!q || !a || !b || !c || !d || ans === "") continue;
-              // تخطّي سطر المثال
-              if (q.startsWith("مثال:")) continue;
-              parsedRows.push({
-                question_text: q,
-                option_a: a,
-                option_b: b,
-                option_c: c,
-                option_d: d,
-                correct_answer: Number(ans),
-              });
-            }
-            if (parsedRows.length === 0) {
-              showToast(
-                "⚠️ لم يتم العثور على أسئلة جديدة — تأكدي من إضافة الأسئلة في قسم «أضيفي الأسئلة الجديدة هنا»",
-                "warn",
-              );
-              return;
-            }
-            showExcelPreview();
-          } catch (err) {
-            showToast("❌ تعذّر قراءة الملف، تأكدي أنه xlsx أو xls", "error");
-          }
-        };
-        reader.readAsArrayBuffer(file);
-      }
-
-      function showExcelPreview() {
-        const L = ["أ", "ب", "ج", "د"];
-        document.getElementById("xl-preview-info").textContent =
-          `تم قراءة ${parsedRows.length} سؤال — مراجعة:`;
-        const container = document.getElementById("xl-rows-preview");
-        container.innerHTML =
-          parsedRows
-            .slice(0, 5)
-            .map(
-              (r, i) => `
-          <div class="rounded-lg px-3 py-2 text-xs" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);">
-            <span class="font-bold" style="color:#059669;">${i + 1}.</span>
-            <span style="color:#2d2640;">${esc(r.question_text)}</span>
-            <span class="mr-2" style="color:#94a3b8;">✓ ${L[r.correct_answer] || "؟"}</span>
-          </div>`,
-            )
-            .join("") +
-          (parsedRows.length > 5
-            ? `<div class="text-xs text-center py-1" style="color:#94a3b8;">... و${parsedRows.length - 5} سؤال آخر</div>`
-            : "");
-        document.getElementById("xl-preview").classList.remove("hidden");
-        document.getElementById("xl-drop-icon").textContent = "✅";
-        document.getElementById("xl-drop-text").textContent =
-          `${parsedRows.length} سؤال جاهز للاستيراد`;
-      }
-
-      function clearExcel() {
-        parsedRows = [];
-        document.getElementById("xl-file-input").value = "";
-        document.getElementById("xl-preview").classList.add("hidden");
-        document.getElementById("xl-result").classList.add("hidden");
-        document.getElementById("xl-drop-icon").textContent = "📊";
-        document.getElementById("xl-drop-text").textContent =
-          "اضغطي أو اسحبي ملف Excel هنا";
-      }
-
-      async function confirmBulkImport() {
-        if (parsedRows.length === 0) return;
-        try {
-          const r = await apiFetch(`${API}/questions/bulk`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              grade_key: grade,
-              unit_index: selU,
-              lesson_index: selL,
-              questions: parsedRows,
-            }),
-          });
-          if (r.status === 401) {
-            showLogin();
-            return;
-          }
-          if (!r.ok) throw new Error();
-          const data = await r.json();
-          const res = document.getElementById("xl-result");
-          let msg = `✅ أُضيف ${data.inserted} سؤال`;
-          if (data.skipped > 0) msg += ` · تجاهلنا ${data.skipped} مكرر`;
-          if (data.errors && data.errors.length > 0)
-            msg += ` · ${data.errors.length} خطأ`;
-          res.textContent = msg;
-          res.className = "rounded-xl p-3 text-sm font-bold";
-          res.style.cssText = data.errors?.length
-            ? "background:rgba(245,158,11,0.1);color:#d97706;border:1px solid rgba(245,158,11,0.3);"
-            : "background:rgba(16,185,129,0.08);color:#059669;border:1px solid rgba(16,185,129,0.2);";
-          res.classList.remove("hidden");
-          clearExcel();
-          await loadQ();
-          await loadCounts();
-          buildTree();
-          showToast(`✅ تم استيراد ${data.inserted} سؤال`);
-        } catch {
-          showToast("❌ حدث خطأ أثناء الاستيراد", "error");
-        }
-      }
-
-      // ── Excel Drag & Drop ───────────────────────────────
-      // ملاحظة: label يحتوي input → الضغط على label يفتح الملف تلقائياً (لا داعي لـ .click() يدوي)
-      const xlDrop = document.getElementById("xl-drop-label");
-      xlDrop.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        xlDrop.classList.add("drag-over");
-      });
-      xlDrop.addEventListener("dragleave", () =>
-        xlDrop.classList.remove("drag-over"),
-      );
-      xlDrop.addEventListener("drop", (e) => {
-        e.preventDefault();
-        xlDrop.classList.remove("drag-over");
-        const f = e.dataTransfer.files[0];
-        if (f) {
-          const inp = document.getElementById("xl-file-input");
-          const dt = new DataTransfer();
-          dt.items.add(f);
-          inp.files = dt.files;
-          onExcelFile(inp);
-        }
-      });
-
-      // ── تعديل الشرح ────────────────────────────────────
-      function addVideoUrlRow(url = '') {
-        const list = document.getElementById('video-urls-list');
-        const row = document.createElement('div');
-        row.className = 'flex gap-2 items-center';
-        row.innerHTML = `
-          <input type="url" dir="ltr" value="${url.replace(/"/g,'&quot;')}"
-                 placeholder="https://www.youtube.com/watch?v=..."
-                 class="video-url-input"
-                 style="flex:1;border:1px solid rgba(124,58,237,0.2);border-radius:10px;padding:8px 12px;font-size:13px;font-family:Cairo,sans-serif;outline:none;background:#fffbf7;"/>
-          <button type="button" onclick="this.parentElement.remove()"
-                  style="flex-shrink:0;width:30px;height:30px;border-radius:8px;border:1px solid rgba(239,68,68,0.2);background:rgba(239,68,68,0.06);color:#ef4444;font-size:14px;cursor:pointer;">✕</button>
-        `;
-        list.appendChild(row);
-      }
-
-      function getVideoUrls() {
-        return Array.from(document.querySelectorAll('#video-urls-list .video-url-input'))
-          .map(i => i.value.trim()).filter(Boolean);
-      }
-
-      async function loadContent() {
-        const editor = document.getElementById("lesson-content-editor");
-        const status = document.getElementById("content-status");
-        const badge  = document.getElementById("content-saved-badge");
-        editor.value = "";
-        document.getElementById('video-urls-list').innerHTML = '';
-        badge.classList.add("hidden");
-        status.textContent = "جاري تحميل الشرح...";
-        try {
-          const r = await fetch(
-            `${API}/lessons/content?gradeKey=${grade}&unitIndex=${selU}&lessonIndex=${selL}`,
-            { credentials: "include", cache: "no-store" },
-          );
-          const d = await r.json();
-          if (d.content) {
-            editor.value = d.content;
-            const dt = new Date(d.updated_at).toLocaleDateString("ar-SA");
-            status.textContent = `آخر تعديل: ${dt}`;
-            badge.classList.remove("hidden");
-          } else {
-            status.textContent = "لا يوجد شرح مخصص — يُستخدم الشرح الافتراضي حالياً";
-          }
-          // تحميل روابط الفيديوهات
-          const urls = Array.isArray(d.video_urls) ? d.video_urls : [];
-          urls.forEach(u => addVideoUrlRow(u));
-        } catch {
-          status.textContent = "تعذّر تحميل الشرح";
-        }
-      }
-
-      async function saveContent() {
-        const content   = document.getElementById("lesson-content-editor").value.trim();
-        const videoUrls = getVideoUrls();
-        try {
-          const r = await apiFetch(`${API}/lessons/content`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              grade_key:    grade,
-              unit_index:   selU,
-              lesson_index: selL,
-              content:      content || "",
-              video_urls:   videoUrls,
-            }),
-          });
-          if (r.status === 401) { showLogin(); return; }
-          if (!r.ok) throw new Error();
-          document.getElementById("content-status").textContent = "تم الحفظ للتو ✓";
-          document.getElementById("content-saved-badge").classList.remove("hidden");
-          showToast(`✅ تم حفظ الشرح${videoUrls.length > 0 ? ` و${videoUrls.length} فيديو` : ''}`);
-        } catch {
-          showToast("❌ حدث خطأ في الحفظ", "error");
-        }
-      }
-
-      async function resetContent() {
-        if (!confirm("هل تريدين حذف الشرح المخصص والعودة للشرح الافتراضي؟"))
-          return;
-        document.getElementById("lesson-content-editor").value = "";
-        document.getElementById("content-status").textContent = "جاري الحذف...";
-        try {
-          await apiFetch(`${API}/lessons/content`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              grade_key: grade,
-              unit_index: selU,
-              lesson_index: selL,
-              content: "__RESET__",
-            }),
-          });
-          document
-            .getElementById("content-saved-badge")
-            .classList.add("hidden");
-          document.getElementById("content-status").textContent =
-            "تم إزالة الشرح المخصص — يُستخدم الشرح الافتراضي الآن";
-          showToast("🔄 تم الرجوع للشرح الافتراضي");
-        } catch {
-          showToast("❌ حدث خطأ", "error");
-        }
-      }
-
-      // ── تصدير / استيراد كامل المرحلة ──────────────────────
-      const gradeImportRows = {};
-
-      async function downloadGradeTemplate(g) {
-        const gradeLabel = g === "first" ? "الأول_متوسط" : "الثاني_متوسط";
-        const gradeName = CUR[g].name;
-        showToast("⏳ جاري تجهيز ملف المرحلة...");
-        let all = [];
-        try {
-          const r = await fetch(`${API}/questions?gradeKey=${g}`, {
-            credentials: "include",
-            cache: "no-store",
-          });
-          all = await r.json();
-        } catch {
-          /* ignore */
-        }
-
-        const headers = [
-          "رقم_الوحدة",
-          "رقم_الدرس",
-          "اسم_الوحدة",
-          "اسم_الدرس",
-          "نص_السؤال",
-          "الخيار_أ",
-          "الخيار_ب",
-          "الخيار_ج",
-          "الخيار_د",
-          "الإجابة_الصحيحة (0=أ 1=ب 2=ج 3=د)",
-        ];
-        const rows = [
-          ["الصف", gradeName],
-          ["عدد الأسئلة الكلي", all.length],
-          [],
-          ["── الأسئلة الموجودة (للمرجع - لا تُرفع مرة أخرى) ──"],
-          headers,
-        ];
-        if (all.length > 0) {
-          all.forEach((q) => {
-            const uName =
-              CUR[g].units[q.unit_index]?.title || `وحدة${q.unit_index + 1}`;
-            const lName =
-              CUR[g].units[q.unit_index]?.lessons[q.lesson_index] ||
-              `درس${q.lesson_index + 1}`;
-            rows.push([
-              q.unit_index + 1,
-              q.lesson_index + 1,
-              uName,
-              lName,
-              q.question_text,
-              q.option_a,
-              q.option_b,
-              q.option_c,
-              q.option_d,
-              q.correct_answer,
-            ]);
-          });
-        } else {
-          rows.push(["(لا توجد أسئلة بعد)"]);
-        }
-        rows.push([]);
-        rows.push([
-          "── أضيفي الأسئلة الجديدة هنا (رقم_الوحدة ورقم_الدرس إلزاميان) ──",
-        ]);
-        rows.push(headers);
-        // سطر مثال لكل درس
-        CUR[g].units.forEach((unit, ui) => {
-          unit.lessons.forEach((lesson, li) => {
-            rows.push([
-              ui + 1,
-              li + 1,
-              unit.title,
-              lesson,
-              `مثال_سؤال`,
-              "خيار أ",
-              "خيار ب",
-              "خيار ج",
-              "خيار د",
-              "0",
-            ]);
-          });
-        });
-        const ws = XLSX.utils.aoa_to_sheet(rows);
-        ws["!cols"] = [12, 12, 28, 28, 55, 18, 18, 18, 18, 32].map((w) => ({
-          wch: w,
-        }));
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "أسئلة_" + gradeName);
-        XLSX.writeFile(wb, `جميع_أسئلة_${gradeLabel}.xlsx`);
-        showToast(`✅ تم تحميل ملف ${gradeName} — ${all.length} سؤال موجود`);
-      }
-
-      function onGradeExcelFile(g, input) {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const wb = XLSX.read(e.target.result, { type: "array" });
-            const ws = wb.Sheets[wb.SheetNames[0]];
-            const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
-            let headerRow = -1;
-            for (let i = 0; i < raw.length; i++) {
-              const cell = String(raw[i][0]);
-              if (cell.includes("أضيفي") || cell.includes("اضيفي")) {
-                if (
-                  i + 1 < raw.length &&
-                  String(raw[i + 1][0]).includes("رقم")
-                ) {
-                  headerRow = i + 1;
-                  break;
-                }
-              }
-            }
-            if (headerRow === -1) {
-              for (let i = raw.length - 1; i >= 0; i--) {
-                if (String(raw[i][0]).includes("رقم")) {
-                  headerRow = i;
-                  break;
-                }
-              }
-            }
-            const dataStart = headerRow >= 0 ? headerRow + 1 : 1;
-            const parsed = [];
-            for (let i = dataStart; i < raw.length; i++) {
-              const r = raw[i];
-              const ui = parseInt(r[0]) - 1;
-              const li = parseInt(r[1]) - 1;
-              const q = String(r[4] || "").trim();
-              const a = String(r[5] || "").trim();
-              const b = String(r[6] || "").trim();
-              const c = String(r[7] || "").trim();
-              const d = String(r[8] || "").trim();
-              const ans = String(r[9] || "").trim();
-              if (
-                isNaN(ui) ||
-                isNaN(li) ||
-                !q ||
-                !a ||
-                !b ||
-                !c ||
-                !d ||
-                ans === ""
-              )
-                continue;
-              if (q.startsWith("مثال")) continue;
-              parsed.push({
-                unit_index: ui,
-                lesson_index: li,
-                question_text: q,
-                option_a: a,
-                option_b: b,
-                option_c: c,
-                option_d: d,
-                correct_answer: Number(ans),
-              });
-            }
-            gradeImportRows[g] = parsed;
-            if (parsed.length === 0) {
-              showToast(
-                "⚠️ لم يتم العثور على أسئلة جديدة — أضيفيها في قسم «أضيفي الأسئلة الجديدة»",
-                "warn",
-              );
-              return;
-            }
-            const unitCount = new Set(
-              parsed.map((r) => `${r.unit_index}|${r.lesson_index}`),
-            ).size;
-            document.getElementById(`g-info-${g}`).textContent =
-              `✅ ${parsed.length} سؤال في ${unitCount} درس — جاهز للاستيراد`;
-            document
-              .getElementById(`g-preview-${g}`)
-              .classList.remove("hidden");
-            // (لا عناصر drop icon/text في التصميم الجديد)
-          } catch {
-            showToast("❌ تعذّر قراءة الملف", "error");
-          }
-        };
-        reader.readAsArrayBuffer(file);
-      }
-
-      function clearGradeExcel(g) {
-        gradeImportRows[g] = [];
-        const fi = document.getElementById(`g-file-${g}`);
-        if (fi) fi.value = "";
-        document.getElementById(`g-preview-${g}`).classList.add("hidden");
-        document.getElementById(`g-result-${g}`).classList.add("hidden");
-      }
-
-      async function confirmGradeImport(g) {
-        const rows = gradeImportRows[g] || [];
-        if (rows.length === 0) return;
-        showToast("⏳ جاري الاستيراد...");
-        // تجميع الأسئلة حسب الوحدة والدرس
-        const groups = {};
-        rows.forEach((r) => {
-          const key = `${r.unit_index}|${r.lesson_index}`;
-          if (!groups[key])
-            groups[key] = {
-              unit_index: r.unit_index,
-              lesson_index: r.lesson_index,
-              questions: [],
-            };
-          groups[key].questions.push(r);
-        });
-        let totalInserted = 0,
-          totalSkipped = 0,
-          totalErrors = 0;
-        for (const key of Object.keys(groups)) {
-          const grp = groups[key];
-          try {
-            const r = await apiFetch(`${API}/questions/bulk`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                grade_key: g,
-                unit_index: grp.unit_index,
-                lesson_index: grp.lesson_index,
-                questions: grp.questions,
-              }),
-            });
-            if (r.status === 401) {
-              showLogin();
-              return;
-            }
-            if (r.ok) {
-              const d = await r.json();
-              totalInserted += d.inserted;
-              totalSkipped += d.skipped || 0;
-              totalErrors += d.errors?.length || 0;
-            } else totalErrors++;
-          } catch {
-            totalErrors++;
-          }
-        }
-        const res = document.getElementById(`g-result-${g}`);
-        let gMsg = `✅ أُضيف ${totalInserted} سؤال`;
-        if (totalSkipped > 0) gMsg += ` · تجاهلنا ${totalSkipped} مكرر`;
-        if (totalErrors > 0) gMsg += ` · ${totalErrors} خطأ`;
-        res.textContent = gMsg;
-        res.className = "rounded-xl p-3 text-sm font-bold";
-        res.style.cssText =
-          totalErrors > 0
-            ? "background:rgba(245,158,11,0.1);color:#d97706;border:1px solid rgba(245,158,11,0.3);"
-            : "background:rgba(16,185,129,0.08);color:#059669;border:1px solid rgba(16,185,129,0.2);";
-        res.classList.remove("hidden");
-        clearGradeExcel(g);
-        await loadCounts();
-        buildTree();
-        if (selU >= 0 && selL >= 0) await loadQ();
-        showToast(
-          `✅ أُضيف ${totalInserted} سؤال${totalSkipped > 0 ? ` (${totalSkipped} مكرر تجاهلناه)` : ""}`,
-        );
-      }
 
       // ══════════════════════════════════════════════════════
       // إحصائيات الطالبات
