@@ -27,7 +27,7 @@ function handle_admin_stats(): void {
 
     $vCounts = [];
     try {
-        $vStmt = $pdo->query("SELECT user_id, COUNT(*) AS vc FROM video_progress GROUP BY user_id");
+        $vStmt = $pdo->query("SELECT user_id, COUNT(DISTINCT grade_key,unit_index,lesson_index) AS vc FROM video_progress GROUP BY user_id");
         while ($row = $vStmt->fetch()) $vCounts[(int)$row['user_id']] = (int)$row['vc'];
     } catch (Throwable $e) {
         Logger::warn('Could not fetch video counts', ['err' => $e->getMessage()]);
@@ -136,7 +136,7 @@ function handle_admin_student_progress(int $userId): void {
     $videos = [];
     try {
         $vStmt = $pdo->prepare(
-            "SELECT grade_key, unit_index, lesson_index FROM video_progress WHERE user_id = ?"
+            "SELECT DISTINCT grade_key, unit_index, lesson_index FROM video_progress WHERE user_id = ?"
         );
         $vStmt->execute([$userId]);
         $videos = array_map(

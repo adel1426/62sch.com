@@ -745,17 +745,16 @@
                   >
                 </div>
                 <div id="content-body" class="hidden mt-4 space-y-3">
-                  <!-- رابط الفيديو -->
+                  <!-- روابط الفيديوهات -->
                   <div>
-                    <label class="block text-xs font-bold mb-1" style="color:#7c3aed">🎬 رابط فيديو الدرس (YouTube)</label>
-                    <input
-                      id="lesson-video-url"
-                      type="url"
-                      dir="ltr"
-                      placeholder="https://www.youtube.com/watch?v=..."
-                      style="width:100%;border:1px solid rgba(124,58,237,0.2);border-radius:10px;padding:8px 12px;font-size:13px;font-family:Cairo,sans-serif;outline:none;background:#fffbf7;"
-                    />
-                    <p class="text-xs mt-1" style="color:#94a3b8">اتركي الحقل فارغاً إذا لم يكن هناك فيديو</p>
+                    <label class="block text-xs font-bold mb-2" style="color:#7c3aed">🎬 روابط فيديوهات الدرس</label>
+                    <div id="video-urls-list" class="space-y-2 mb-2"></div>
+                    <button type="button" onclick="addVideoUrlRow()"
+                            class="text-xs px-3 py-1.5 rounded-xl font-bold"
+                            style="background:rgba(124,58,237,0.08);color:#7c3aed;border:1px solid rgba(124,58,237,0.2)">
+                      + إضافة فيديو
+                    </button>
+                    <p class="text-xs mt-2" style="color:#94a3b8">يمكن إضافة أكثر من فيديو — كل فيديو يمنح الطالبة ٥ نقاط عند مشاهدته</p>
                   </div>
                   <!-- شرح الدرس -->
                   <div>
@@ -2531,13 +2530,32 @@
       });
 
       // ── تعديل الشرح ────────────────────────────────────
+      function addVideoUrlRow(url = '') {
+        const list = document.getElementById('video-urls-list');
+        const row = document.createElement('div');
+        row.className = 'flex gap-2 items-center';
+        row.innerHTML = `
+          <input type="url" dir="ltr" value="${url.replace(/"/g,'&quot;')}"
+                 placeholder="https://www.youtube.com/watch?v=..."
+                 class="video-url-input"
+                 style="flex:1;border:1px solid rgba(124,58,237,0.2);border-radius:10px;padding:8px 12px;font-size:13px;font-family:Cairo,sans-serif;outline:none;background:#fffbf7;"/>
+          <button type="button" onclick="this.parentElement.remove()"
+                  style="flex-shrink:0;width:30px;height:30px;border-radius:8px;border:1px solid rgba(239,68,68,0.2);background:rgba(239,68,68,0.06);color:#ef4444;font-size:14px;cursor:pointer;">✕</button>
+        `;
+        list.appendChild(row);
+      }
+
+      function getVideoUrls() {
+        return Array.from(document.querySelectorAll('#video-urls-list .video-url-input'))
+          .map(i => i.value.trim()).filter(Boolean);
+      }
+
       async function loadContent() {
         const editor = document.getElementById("lesson-content-editor");
-        const videoEl = document.getElementById("lesson-video-url");
         const status = document.getElementById("content-status");
-        const badge = document.getElementById("content-saved-badge");
+        const badge  = document.getElementById("content-saved-badge");
         editor.value = "";
-        videoEl.value = "";
+        document.getElementById('video-urls-list').innerHTML = '';
         badge.classList.add("hidden");
         status.textContent = "جاري تحميل الشرح...";
         try {
@@ -2554,15 +2572,17 @@
           } else {
             status.textContent = "لا يوجد شرح مخصص — يُستخدم الشرح الافتراضي حالياً";
           }
-          if (d.video_url) videoEl.value = d.video_url;
+          // تحميل روابط الفيديوهات
+          const urls = Array.isArray(d.video_urls) ? d.video_urls : [];
+          urls.forEach(u => addVideoUrlRow(u));
         } catch {
           status.textContent = "تعذّر تحميل الشرح";
         }
       }
 
       async function saveContent() {
-        const content  = document.getElementById("lesson-content-editor").value.trim();
-        const videoUrl = document.getElementById("lesson-video-url").value.trim();
+        const content   = document.getElementById("lesson-content-editor").value.trim();
+        const videoUrls = getVideoUrls();
         try {
           const r = await apiFetch(`${API}/lessons/content`, {
             method: "PUT",
@@ -2572,14 +2592,14 @@
               unit_index:   selU,
               lesson_index: selL,
               content:      content || "",
-              video_url:    videoUrl || null,
+              video_urls:   videoUrls,
             }),
           });
           if (r.status === 401) { showLogin(); return; }
           if (!r.ok) throw new Error();
           document.getElementById("content-status").textContent = "تم الحفظ للتو ✓";
           document.getElementById("content-saved-badge").classList.remove("hidden");
-          showToast("✅ تم حفظ الشرح والفيديو");
+          showToast(`✅ تم حفظ الشرح${videoUrls.length > 0 ? ` و${videoUrls.length} فيديو` : ''}`);
         } catch {
           showToast("❌ حدث خطأ في الحفظ", "error");
         }

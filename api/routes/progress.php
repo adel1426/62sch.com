@@ -40,13 +40,13 @@ function handle_progress_get(): void {
 
     $videos = [];
     try {
-        $vSql    = "SELECT grade_key, unit_index, lesson_index FROM video_progress WHERE user_id = ?";
+        $vSql    = "SELECT grade_key, unit_index, lesson_index, video_index FROM video_progress WHERE user_id = ?";
         $vParams = [$studentId];
         if ($grade) { $vSql .= " AND grade_key = ?"; $vParams[] = $grade; }
         $vStmt = db()->prepare($vSql);
         $vStmt->execute($vParams);
         $videos = array_map(
-            fn($r) => $r['grade_key'] . '|' . $r['unit_index'] . '|' . $r['lesson_index'],
+            fn($r) => $r['grade_key'] . '|' . $r['unit_index'] . '|' . $r['lesson_index'] . '|' . $r['video_index'],
             $vStmt->fetchAll()
         );
     } catch (Throwable $e) {
@@ -100,6 +100,7 @@ function handle_progress_video(): void {
     $gradeKey    = $b['gradeKey']    ?? '';
     $unitIndex   = isset($b['unitIndex'])   ? (int)$b['unitIndex']   : null;
     $lessonIndex = isset($b['lessonIndex']) ? (int)$b['lessonIndex'] : null;
+    $videoIndex  = isset($b['videoIndex'])  ? (int)$b['videoIndex']  : 0;
 
     if (!$gradeKey || $unitIndex === null || $lessonIndex === null) {
         send_json(['error' => 'بيانات ناقصة'], 400);
@@ -107,16 +108,16 @@ function handle_progress_video(): void {
 
     $pdo   = db();
     $check = $pdo->prepare(
-        "SELECT id FROM video_progress WHERE user_id=? AND grade_key=? AND unit_index=? AND lesson_index=?"
+        "SELECT id FROM video_progress WHERE user_id=? AND grade_key=? AND unit_index=? AND lesson_index=? AND video_index=?"
     );
-    $check->execute([$userId, $gradeKey, $unitIndex, $lessonIndex]);
+    $check->execute([$userId, $gradeKey, $unitIndex, $lessonIndex, $videoIndex]);
     if ($check->fetch()) {
         send_json(['ok' => true, 'points_earned' => 0, 'already_watched' => true]);
     }
 
     $pdo->prepare(
-        "INSERT IGNORE INTO video_progress (user_id, grade_key, unit_index, lesson_index) VALUES (?,?,?,?)"
-    )->execute([$userId, $gradeKey, $unitIndex, $lessonIndex]);
+        "INSERT IGNORE INTO video_progress (user_id, grade_key, unit_index, lesson_index, video_index) VALUES (?,?,?,?,?)"
+    )->execute([$userId, $gradeKey, $unitIndex, $lessonIndex, $videoIndex]);
 
     $points = 5;
     $pdo->prepare("UPDATE users SET total_points = total_points + ? WHERE id = ?")

@@ -6,7 +6,7 @@ function handle_lesson_content_get(): void {
     $l = $_GET['lessonIndex'] ?? null;
 
     if (!$g || $u === null || $l === null) {
-        send_json(['content' => null, 'video_url' => null]);
+        send_json(['content' => null, 'video_urls' => []]);
     }
 
     $stmt = db()->prepare(
@@ -16,8 +16,13 @@ function handle_lesson_content_get(): void {
     $stmt->execute([$g, (int)$u, (int)$l]);
     $row = $stmt->fetch();
 
-    if (!$row) send_json(['content' => null, 'video_url' => null]);
-    send_json(['content' => $row['content'], 'video_url' => $row['video_url'], 'updated_at' => $row['updated_at']]);
+    if (!$row) send_json(['content' => null, 'video_urls' => []]);
+
+    send_json([
+        'content'    => $row['content'],
+        'video_urls' => parse_video_urls($row['video_url']),
+        'updated_at' => $row['updated_at'],
+    ]);
 }
 
 function handle_lesson_content_put(): void {
@@ -27,7 +32,7 @@ function handle_lesson_content_put(): void {
     $u   = $b['unit_index']   ?? null;
     $l   = $b['lesson_index'] ?? null;
     $c   = $b['content']      ?? '';
-    $vid = $b['video_url']    ?? null;
+    $vid = encode_video_urls($b['video_urls'] ?? []);
 
     if (!$g || $u === null || $l === null) {
         send_json(['error' => 'حقول مطلوبة مفقودة'], 400);
@@ -41,4 +46,21 @@ function handle_lesson_content_put(): void {
 
     Logger::info('Lesson content updated', ['grade' => $g, 'unit' => $u, 'lesson' => $l]);
     send_json(['success' => true]);
+}
+
+/** تحويل حقل video_url (قد يكون نصاً أو JSON) إلى مصفوفة روابط */
+function parse_video_urls(?string $raw): array {
+    if (!$raw) return [];
+    if (str_starts_with(trim($raw), '[')) {
+        $arr = json_decode($raw, true);
+        return is_array($arr) ? array_values(array_filter($arr)) : [];
+    }
+    return [$raw];
+}
+
+/** تحويل مصفوفة الروابط إلى JSON للتخزين (أو null إذا فارغة) */
+function encode_video_urls(mixed $urls): ?string {
+    if (!is_array($urls)) return null;
+    $clean = array_values(array_filter(array_map('trim', $urls)));
+    return empty($clean) ? null : json_encode($clean, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
