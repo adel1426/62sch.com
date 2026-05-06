@@ -1175,7 +1175,7 @@
               emoji:   u.emoji || '📚',
               lessons: (u.lessons || [])
                          .sort((a, b) => a.lesson_index - b.lesson_index)
-                         .map(l => ({ title: l.title, content: '', quiz: [] })),
+                         .map(l => ({ title: l.title, emoji: l.emoji || '📘', content: '', quiz: [] })),
             }));
           }
         } catch {}
@@ -1233,7 +1233,7 @@
           card.innerHTML = `
           <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0" style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(236,72,153,0.15));color:#7C3AED;">${toArabicDigits(idx + 1)}</div>
           <div class="flex-1">
-            <h3 class="font-bold text-sm mb-0.5" style="color:#2D2640;">${lesson.title}</h3>
+            <h3 class="font-bold text-sm mb-0.5" style="color:#2D2640;">${lesson.emoji || '📘'} ${lesson.title}</h3>
             <p class="text-xs" id="q-count-${unitIdx}-${idx}" style="color:#94a3b8;">
               <span class="inline-block w-12 h-3 rounded animate-pulse" style="background:#e2e8f0;"></span>
             </p>
@@ -1282,7 +1282,7 @@
                 emoji:   u.emoji || '📚',
                 lessons: (u.lessons || [])
                            .sort((a, b) => a.lesson_index - b.lesson_index)
-                           .map(l => ({ title: l.title, content: '', quiz: [] })),
+                           .map(l => ({ title: l.title, emoji: l.emoji || '📘', content: '', quiz: [] })),
               }));
             }
           } catch {}
@@ -1313,7 +1313,7 @@
           setLessonUrl(currentGrade, currentUnitIndex, lessonIdx, options.replaceUrl);
         }
         document.getElementById("lesson-detail-title").textContent =
-          lesson.title;
+          `${lesson.emoji || '📘'} ${lesson.title}`;
         const content = document.getElementById("lesson-detail-content");
 
         // تحميل الشرح: من قاعدة البيانات أولاً، ثم الافتراضي
@@ -2348,9 +2348,10 @@
               (dbUnit.lessons || []).forEach(dbLesson => {
                 const li = dbLesson.lesson_index;
                 while (unit.lessons.length <= li) {
-                  unit.lessons.push({ title: '', content: '<p class="text-slate-400 text-center py-8">محتوى الدرس قيد الإعداد</p>', quiz: [] });
+                  unit.lessons.push({ title: '', emoji: '📘', content: '<p class="text-slate-400 text-center py-8">محتوى الدرس قيد الإعداد</p>', quiz: [] });
                 }
                 unit.lessons[li].title = dbLesson.title;
+                unit.lessons[li].emoji = dbLesson.emoji || '📘';
               });
             });
           } catch {}

@@ -14,7 +14,7 @@ function handle_curriculum_get(): void {
     $units  = $uStmt->fetchAll(PDO::FETCH_ASSOC);
 
     $lStmt  = $pdo->prepare(
-        "SELECT id, unit_index, lesson_index, title
+        "SELECT id, unit_index, lesson_index, title, COALESCE(emoji, '📘') AS emoji
          FROM curriculum_lessons WHERE grade_key=? ORDER BY unit_index, lesson_index"
     );
     $lStmt->execute([$gradeKey]);
@@ -26,6 +26,7 @@ function handle_curriculum_get(): void {
             'id'           => (int)$l['id'],
             'lesson_index' => (int)$l['lesson_index'],
             'title'        => $l['title'],
+            'emoji'        => $l['emoji'] ?? '📘',
         ];
     }
 
@@ -79,6 +80,7 @@ function handle_curriculum_lesson_upsert(): void {
     $gradeKey    = $b['grade_key']  ?? '';
     $unitIndex   = isset($b['unit_index']) ? (int)$b['unit_index'] : null;
     $title       = trim($b['title'] ?? '');
+    $emoji       = trim($b['emoji'] ?? '📘');
 
     if (!$title || !in_array($gradeKey, ['first', 'second']) || $unitIndex === null) {
         send_json(['error' => 'بيانات غير صالحة'], 400);
@@ -98,9 +100,9 @@ function handle_curriculum_lesson_upsert(): void {
     }
 
     $pdo->prepare(
-        "INSERT INTO curriculum_lessons (grade_key, unit_index, lesson_index, title) VALUES (?,?,?,?)
-         ON DUPLICATE KEY UPDATE title=VALUES(title)"
-    )->execute([$gradeKey, $unitIndex, $lessonIndex, $title]);
+        "INSERT INTO curriculum_lessons (grade_key, unit_index, lesson_index, title, emoji) VALUES (?,?,?,?,?)
+         ON DUPLICATE KEY UPDATE title=VALUES(title), emoji=VALUES(emoji)"
+    )->execute([$gradeKey, $unitIndex, $lessonIndex, $title, $emoji]);
 
     send_json(['ok' => true, 'lesson_index' => $lessonIndex]);
 }

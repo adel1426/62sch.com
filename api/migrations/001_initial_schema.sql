@@ -95,5 +95,6 @@ CREATE TABLE IF NOT EXISTS curriculum_lessons (
     unit_index INT NOT NULL,
     lesson_index INT NOT NULL,
     title VARCHAR(200) NOT NULL,
+    emoji VARCHAR(10) NOT NULL DEFAULT '📘',
     UNIQUE KEY uniq_cl (grade_key, unit_index, lesson_index)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

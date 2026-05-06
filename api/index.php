@@ -47,6 +47,9 @@ try {
         // ── الصحة ──
         case ($path === 'health' || $path === 'healthz') && $method === 'GET':
             send_json(['status' => 'ok', 'time' => date('c')]);
+        case $path === 'migrate' && $method === 'GET':
+            require __DIR__ . '/migrate.php';
+            exit;
 
         // ── المصادقة ──
         case $path === 'auth/login'        && $method === 'POST': handle_login();

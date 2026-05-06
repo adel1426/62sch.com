@@ -180,9 +180,17 @@ if ($step === 'install') {
             unit_index INT NOT NULL,
             lesson_index INT NOT NULL,
             title VARCHAR(200) NOT NULL,
+            emoji VARCHAR(10) NOT NULL DEFAULT '📘',
             UNIQUE KEY uniq_cl (grade_key, unit_index, lesson_index)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
         ok("✅ جدول الدروس المخصصة (curriculum_lessons) جاهز");
+
+        try {
+            $pdo->exec("ALTER TABLE curriculum_lessons ADD COLUMN emoji VARCHAR(10) NOT NULL DEFAULT '📘' AFTER title");
+            ok("✅ حقل emoji أُضيف للدروس");
+        } catch (Throwable $e) {
+            ok("ℹ️ حقل emoji للدروس موجود مسبقًا");
+        }
 
         // ── خطوة 2: استيراد بيانات الأسئلة ──
         $sqlFile = __DIR__ . '/data.sql';
