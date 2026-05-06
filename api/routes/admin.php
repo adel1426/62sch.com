@@ -195,3 +195,18 @@ function handle_admin_reset_students(string $grade): void {
     Logger::info('Admin reset students', ['grade' => $grade, 'deleted' => $affected]);
     send_json(['ok' => true, 'affected' => $affected]);
 }
+
+function handle_admin_reset_curriculum(string $grade): void {
+    require_admin();
+    if (!in_array($grade, ['first', 'second'])) {
+        send_json(['error' => 'مرحلة غير صالحة'], 400);
+    }
+    $pdo = db();
+    // حذف الأسئلة والدروس والوحدات للمرحلة (الجداول مرتبطة بـ grade_key)
+    try { $pdo->prepare("DELETE FROM questions WHERE grade_key = ?")->execute([$grade]); } catch (Throwable $e) {}
+    try { $pdo->prepare("DELETE FROM curriculum_lessons WHERE grade_key = ?")->execute([$grade]); } catch (Throwable $e) {}
+    try { $pdo->prepare("DELETE FROM curriculum_units  WHERE grade_key = ?")->execute([$grade]); } catch (Throwable $e) {}
+
+    Logger::info('Admin reset curriculum', ['grade' => $grade]);
+    send_json(['ok' => true]);
+}

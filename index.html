@@ -10,13 +10,13 @@
       content="منصة تعليمية تفاعلية لطالبات المرحلة المتوسطة — اكتشفي الدروس وتنافسي مع زميلاتك!"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="منصة رحلتك التفاعلية نحو التميز" />
+    <meta property="og:title" content="رحلتك التفاعلية نحو التميز" />
     <meta
       property="og:description"
       content="منصة تعليمية تفاعلية لطالبات المرحلة المتوسطة — اكتشفي الدروس وتنافسي مع زميلاتك!"
     />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="منصة رحلتك التفاعلية نحو التميز" />
+    <meta name="twitter:title" content="رحلتك التفاعلية نحو التميز" />
     <meta
       name="twitter:description"
       content="منصة تعليمية تفاعلية لطالبات المرحلة المتوسطة — اكتشفي الدروس وتنافسي مع زميلاتك!"
@@ -408,6 +408,30 @@
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
       }
 
+      .home-panel,
+      .home-action-card {
+        background: white;
+        border: 1px solid rgba(124, 58, 237, 0.09);
+        box-shadow: 0 4px 18px rgba(45, 38, 64, 0.06);
+      }
+
+      .home-action-card {
+        min-height: 108px;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .home-action-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(124, 58, 237, 0.2);
+        box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
+      }
+
+      .home-action-card:active {
+        transform: scale(0.98);
+      }
     </style>
   </head>
   <body class="h-full" style="background: #fffbf7; color: #2d2640">
@@ -1786,827 +1810,123 @@
           name: "الثاني متوسط",
           units: [
             {
-              title: "الأعداد والعمليات عليها",
+              title: "الأعداد النسبية",
               emoji: "🔢",
               lessons: [
-                {
-                  title: "الأعداد النسبية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">الأعداد النسبية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 التعريف:</p><p class="text-slate-300">عدد يمكن كتابته على صورة كسر أ/ب حيث ب ≠ 0</p><p class="text-slate-300 mt-2">أمثلة: 1/2, -3/4, 5, -2</p></div>`,
-                  quiz: [
-                    {
-                      q: "أي الأعداد التالية عدد نسبي؟",
-                      options: ["جذر 3", "ط", "2/5", "جذر 5"],
-                      answer: 2,
-                    },
-                    {
-                      q: "العدد -0.5 يساوي:",
-                      options: ["-1/2", "1/2", "-5", "5/10"],
-                      answer: 0,
-                    },
-                    {
-                      q: "أي الأعداد التالية أكبر؟",
-                      options: ["-8", "-3", "-10", "-15"],
-                      answer: 1,
-                    },
-                    {
-                      q: "ترتيب الأعداد تصاعدياً: -2 ، 1 ، -5 ، 3",
-                      options: [
-                        "-5 ، -2 ، 1 ، 3",
-                        "3 ، 1 ، -2 ، -5",
-                        "-2 ، -5 ، 1 ، 3",
-                        "1 ، 3 ، -5 ، -2",
-                      ],
-                      answer: 0,
-                    },
-                    {
-                      q: "أي الأعداد نسبي؟",
-                      options: ["π", "√2", "5/3", "لا شيء"],
-                      answer: 2,
-                    },
-                    {
-                      q: "هل -5 عدد نسبي؟",
-                      options: ["نعم", "لا", "ربما", "غير محدد"],
-                      answer: 0,
-                    },
-                    {
-                      q: "أبسط صورة لـ 6/9:",
-                      options: ["2/3", "3/9", "6/9", "1/3"],
-                      answer: 0,
-                    },
-                    {
-                      q: "العدد -2/5 في الصورة العشرية:",
-                      options: ["-0.4", "-0.25", "-0.2", "-2.5"],
-                      answer: 0,
-                    },
-                    {
-                      q: "هل 0 عدد نسبي؟",
-                      options: ["نعم", "لا", "غير محدد", "ربما"],
-                      answer: 0,
-                    },
-                    {
-                      q: "العدد 3/4 = ؟",
-                      options: ["0.5", "0.75", "0.25", "0.3"],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "القوى والأسس",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">القوى والأسس</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 قوانين الأسس:</p><ul class="text-slate-300 space-y-1 pr-4"><li>a^m × a^n = a^(m+n)</li><li>a^m ÷ a^n = a^(m-n)</li><li>(a^m)^n = a^(mn)</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "2³ × 2² = ؟",
-                      options: ["2⁵", "2⁶", "4⁵", "32"],
-                      answer: 0,
-                    },
-                    {
-                      q: "3⁴ ÷ 3² = ؟",
-                      options: ["3²", "3⁶", "1.5²", "9"],
-                      answer: 0,
-                    },
-                    {
-                      q: "(2²)³ = ؟",
-                      options: ["2⁵", "2⁶", "8³", "64"],
-                      answer: 1,
-                    },
-                    {
-                      q: "5⁰ = ؟",
-                      options: ["0", "1", "5", "غير معرّف"],
-                      answer: 1,
-                    },
-                    {
-                      q: "(-2)⁴ = ؟",
-                      options: ["-16", "16", "8", "-8"],
-                      answer: 1,
-                    },
-                    {
-                      q: "2⁻² = ؟",
-                      options: ["1/4", "1/2", "4", "2"],
-                      answer: 0,
-                    },
-                    {
-                      q: "10⁵ = ؟",
-                      options: ["50000", "100000", "500000", "1000000"],
-                      answer: 1,
-                    },
-                    {
-                      q: "(3²)² = ؟",
-                      options: ["3⁴", "3⁶", "81", "كلا من أ وب"],
-                      answer: 2,
-                    },
-                    {
-                      q: "x⁵ × x³ = ؟",
-                      options: ["x⁸", "x² ", "x¹⁵", "x⁵³"],
-                      answer: 0,
-                    },
-                    { q: "4² = ؟", options: ["8", "16", "12", "2"], answer: 1 },
-                    {
-                      q: "6⁰ = ؟",
-                      options: ["0", "1", "6", "غير محدد"],
-                      answer: 1,
-                    },
-                    {
-                      q: "2⁴ × 2⁻² = ؟",
-                      options: ["2²", "2⁶", "2⁸", "4"],
-                      answer: 0,
-                    },
-                    {
-                      q: "(5²)⁰ = ؟",
-                      options: ["0", "1", "25", "50"],
-                      answer: 1,
-                    },
-                    {
-                      q: "y² × y² × y² = ؟",
-                      options: ["y⁶", "y⁸", "3y²", "y²³"],
-                      answer: 0,
-                    },
-                    {
-                      q: "10³ ÷ 10¹ = ؟",
-                      options: ["10²", "10¹", "100", "1000"],
-                      answer: 0,
-                    },
-                  ],
-                },
-                {
-                  title: "الجذور التربيعية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">الجذور التربيعية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 قاعدة:</p><p class="text-slate-300">√(أ × ب) = √أ × √ب</p><p class="text-slate-300">√(أ/ب) = √أ / √ب</p></div>`,
-                  quiz: [
-                    {
-                      q: "√144 = ؟",
-                      options: ["11", "12", "13", "14"],
-                      answer: 1,
-                    },
-                    {
-                      q: "√(9 × 4) = ؟",
-                      options: ["6", "36", "13", "12"],
-                      answer: 0,
-                    },
-                    {
-                      q: "√0.25 = ؟",
-                      options: ["0.5", "2.5", "1.5", "0.25"],
-                      answer: 0,
-                    },
-                    {
-                      q: "√(1/4) = ؟",
-                      options: ["1/2", "1/4", "2", "4"],
-                      answer: 0,
-                    },
-                    {
-                      q: "(√5)² = ؟",
-                      options: ["5", "25", "√5", "2.5"],
-                      answer: 0,
-                    },
-                    {
-                      q: "√81 = ؟",
-                      options: ["8", "9", "10", "11"],
-                      answer: 1,
-                    },
-                    {
-                      q: "√169 = ؟",
-                      options: ["11", "12", "13", "14"],
-                      answer: 2,
-                    },
-                    {
-                      q: "√(16/9) = ؟",
-                      options: ["4/3", "16/9", "3/4", "9/16"],
-                      answer: 0,
-                    },
-                    {
-                      q: "ما √100؟",
-                      options: ["5", "10", "50", "100"],
-                      answer: 1,
-                    },
-                    {
-                      q: "√36 + √64 = ؟",
-                      options: ["10", "12", "14", "100"],
-                      answer: 2,
-                    },
-                  ],
-                },
-                {
-                  title: "الأعداد الحقيقية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">الأعداد الحقيقية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 التصنيف:</p><p class="text-slate-300">الأعداد الحقيقية = النسبية + غير النسبية</p><p class="text-slate-300 mt-2">أمثلة غير نسبية: √2, π, e</p></div>`,
-                  quiz: [
-                    {
-                      q: "π عدد:",
-                      options: ["نسبي", "غير نسبي", "صحيح", "طبيعي"],
-                      answer: 1,
-                    },
-                    {
-                      q: "مجموعة الأعداد الحقيقية تشمل:",
-                      options: [
-                        "النسبية فقط",
-                        "غير النسبية فقط",
-                        "كليهما",
-                        "لا شيء",
-                      ],
-                      answer: 2,
-                    },
-                    {
-                      q: "√2 عدد:",
-                      options: ["صحيح", "نسبي", "غير نسبي", "طبيعي"],
-                      answer: 2,
-                    },
-                    {
-                      q: "أي من الأعداد التالية عدد حقيقي؟",
-                      options: ["∞", "غير معرّف", "√9", "جميع السابق"],
-                      answer: 2,
-                    },
-                    {
-                      q: "√4 عدد:",
-                      options: ["غير نسبي", "نسبي", "غير حقيقي", "وهمي"],
-                      answer: 1,
-                    },
-                    {
-                      q: "أي من التالي غير نسبي؟",
-                      options: ["1/3", "0.5", "√3", "2"],
-                      answer: 2,
-                    },
-                    {
-                      q: "ما النظير الضربي للعدد -2/5؟",
-                      options: ["2/5", "-5/2", "-2/5", "5/2"],
-                      answer: 1,
-                    },
-                    {
-                      q: "الأعداد الحقيقية تشمل:",
-                      options: [
-                        "الموجبة فقط",
-                        "السالبة فقط",
-                        "الموجبة والسالبة والصفر",
-                        "الموجبة والسالبة فقط",
-                      ],
-                      answer: 2,
-                    },
-                    {
-                      q: "أي من الأعداد التالية حقيقي؟",
-                      options: ["π", "√2", "5/3", "جميع ما سبق"],
-                      answer: 3,
-                    },
-                  ],
-                },
-                {
-                  title: "التناسب المئوي",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">التناسب المئوي</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الصيغة:</p><p class="text-slate-300">الجزء / الكل = النسبة المئوية / 100</p><p class="text-slate-300 mt-2">مثال: 20/100 = 20%</p></div>`,
-                  quiz: [
-                    {
-                      q: "ما 40% من 50؟",
-                      options: ["10", "15", "20", "25"],
-                      answer: 2,
-                    },
-                    {
-                      q: "إذا 25 من 100، النسبة المئوية:",
-                      options: ["20%", "25%", "50%", "75%"],
-                      answer: 1,
-                    },
-                    {
-                      q: "ما العدد الذي 20% منه = 10؟",
-                      options: ["30", "40", "50", "60"],
-                      answer: 2,
-                    },
-                    {
-                      q: "150% من 80 = ؟",
-                      options: ["100", "110", "120", "130"],
-                      answer: 2,
-                    },
-                    {
-                      q: "حذاء سعره الأصلي 80 ريالاً، ارتفع سعره بنسبة 25%، فكم أصبح سعره الجديد؟",
-                      options: ["85", "95", "100", "105"],
-                      answer: 2,
-                    },
-                    {
-                      q: "ما 10% من 200؟",
-                      options: ["10", "20", "30", "50"],
-                      answer: 1,
-                    },
-                    {
-                      q: "إذا السعر 500 ريال وخصم 15%، السعر النهائي:",
-                      options: ["85", "315", "425", "515"],
-                      answer: 2,
-                    },
-                  ],
-                },
+                { title: "الأعداد النسبية", content: '', quiz: [] },
+                { title: "مقارنة الأعداد النسبية وترتيبها", content: '', quiz: [] },
+                { title: "جمع الأعداد النسبية وطرحها", content: '', quiz: [] },
+                { title: "ضرب الأعداد النسبية وقسمتها", content: '', quiz: [] },
+                { title: "حل مسائل الأعداد النسبية", content: '', quiz: [] },
+                { title: "العمليات المركبة على الأعداد النسبية", content: '', quiz: [] },
+                { title: "التعابير الجبرية والأعداد النسبية", content: '', quiz: [] },
+                { title: "مراجعة الفصل الأول", content: '', quiz: [] },
               ],
             },
             {
-              title: "الجبر والدوال",
+              title: "الأعداد الحقيقية ونظرية فيثاغورس",
               emoji: "📐",
               lessons: [
-                {
-                  title: "المعادلات والمتباينات",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">المعادلات والمتباينات</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الفرق:</p><p class="text-slate-300"><strong>المعادلة:</strong> =</p><p class="text-slate-300"><strong>المتباينة:</strong> < ، > ، ≤ ، ≥</p></div>`,
-                  quiz: [
-                    {
-                      q: "حل: 2س + 3 < 9",
-                      options: ["س < 3", "س > 3", "س < 6", "س > 6"],
-                      answer: 0,
-                    },
-                    {
-                      q: "حل: 3س ≥ 12",
-                      options: ["س ≥ 4", "س ≤ 3", "س > 4", "س < 4"],
-                      answer: 0,
-                    },
-                    {
-                      q: "متباينة تمثل: عدد أقل من 10",
-                      options: ["x > 10", "x < 10", "x = 10", "x ≥ 10"],
-                      answer: 1,
-                    },
-                    {
-                      q: "حل: س - 5 > 2",
-                      options: ["س > 7", "س < 7", "س ≤ 7", "س ≥ 7"],
-                      answer: 0,
-                    },
-                    {
-                      q: "عند ضرب/قسمة متباينة بسالب:",
-                      options: [
-                        "لا يتغير",
-                        "ينقلب الرمز",
-                        "تصبح معادلة",
-                        "تلغى",
-                      ],
-                      answer: 1,
-                    },
-                    {
-                      q: "حل: 4س + 5 = 21",
-                      options: ["س = 3", "س = 4", "س = 5", "س = 6"],
-                      answer: 1,
-                    },
-                    {
-                      q: "حل: -2س < 8",
-                      options: ["س < -4", "س > -4", "س < 4", "س > 4"],
-                      answer: 1,
-                    },
-                    {
-                      q: "حل: س/2 = 10",
-                      options: ["20", "5", "15", "25"],
-                      answer: 0,
-                    },
-                    {
-                      q: "عدد مضاف إلى 5 يساوي 12:",
-                      options: [
-                        "x + 5 < 12",
-                        "x + 5 > 12",
-                        "x + 5 = 12",
-                        "x + 5 ≥ 12",
-                      ],
-                      answer: 2,
-                    },
-                  ],
-                },
-                {
-                  title: "المتباينات الخطية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">المتباينات الخطية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الحل:</p><p class="text-slate-300">تحل مثل المعادلة مع مراعاة انعكاس الإشارة عند الضرب أو القسمة بعدد سالب</p></div>`,
-                  quiz: [
-                    {
-                      q: "حل: 3x - 6 > 0",
-                      options: ["x > 2", "x < 2", "x > 6", "x < 6"],
-                      answer: 0,
-                    },
-                    {
-                      q: "حل: -x + 4 ≤ 7",
-                      options: ["x ≥ -3", "x ≤ -3", "x ≥ 3", "x ≤ 3"],
-                      answer: 0,
-                    },
-                    {
-                      q: "حل: 2x + 1 < 5",
-                      options: ["x < 2", "x > 2", "x < 3", "x > 3"],
-                      answer: 0,
-                    },
-                    {
-                      q: "حل: -4x ≥ 12",
-                      options: ["x ≥ -3", "x ≤ -3", "x ≥ 3", "x ≤ 3"],
-                      answer: 1,
-                    },
-                    {
-                      q: "حل: x/3 + 2 > 5",
-                      options: ["x > 9", "x < 9", "x > 3", "x < 3"],
-                      answer: 0,
-                    },
-                  ],
-                },
-                {
-                  title: "الدوال الخطية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">الدوال الخطية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الصيغة العامة:</p><p class="text-slate-300">y = mx + b</p><p class="text-slate-300">m = الميل، b = الجزء المقطوع من y</p></div>`,
-                  quiz: [
-                    {
-                      q: "ميل الدالة y = 3x + 2:",
-                      options: ["2", "3", "5", "6"],
-                      answer: 1,
-                    },
-                    {
-                      q: "الجزء المقطوع من y في y = -x + 5:",
-                      options: ["-1", "5", "-5", "1"],
-                      answer: 1,
-                    },
-                    {
-                      q: "إذا y = 2x، فما y عند x = 3؟",
-                      options: ["5", "6", "8", "9"],
-                      answer: 1,
-                    },
-                    {
-                      q: "الدالة y = 4 هي:",
-                      options: ["خطية", "تربيعية", "ثابتة", "أسية"],
-                      answer: 2,
-                    },
-                    {
-                      q: "ميل خط أفقي:",
-                      options: ["1", "0", "غير معرّف", "-1"],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "أنظمة المعادلات الخطية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">أنظمة المعادلات الخطية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 طرق الحل:</p><ul class="text-slate-300 space-y-1 pr-4"><li>التعويض</li><li>الحذف</li><li>الرسم البياني</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "حل: x + y = 5, x - y = 1",
-                      options: ["x=3, y=2", "x=2, y=3", "x=4, y=1", "x=1, y=4"],
-                      answer: 0,
-                    },
-                    {
-                      q: "نقطة تقاطع خطين هي:",
-                      options: ["الميل", "الحل", "المقطع", "القمة"],
-                      answer: 1,
-                    },
-                    {
-                      q: "خطان متوازيان لهما:",
-                      options: ["حل واحد", "لا حل", "حلول لانهائية", "حلان"],
-                      answer: 1,
-                    },
-                    {
-                      q: "إذا x = 2y و x + y = 6:",
-                      options: ["x=4, y=2", "x=3, y=3", "x=2, y=4", "x=6, y=0"],
-                      answer: 0,
-                    },
-                    {
-                      q: "نظام له حلول لانهائية عندما:",
-                      options: [
-                        "الخطان متقاطعان",
-                        "الخطان متطابقان",
-                        "الخطان متوازيان",
-                        "لا شيء",
-                      ],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "كثيرات الحدود",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">كثيرات الحدود</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 المفاهيم:</p><ul class="text-slate-300 space-y-1 pr-4"><li>أحادي الحد: 3x²</li><li>ثنائي الحد: 2x + 5</li><li>ثلاثي الحد: x² + 3x + 2</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "درجة كثيرة الحدود 3x⁴ + 2x - 1:",
-                      options: ["1", "2", "3", "4"],
-                      answer: 3,
-                    },
-                    {
-                      q: "(2x + 3) + (x - 1) = ؟",
-                      options: ["3x + 2", "3x + 4", "2x + 2", "x + 2"],
-                      answer: 0,
-                    },
-                    {
-                      q: "(4x² - x) - (2x² + 3x) = ؟",
-                      options: ["2x² - 4x", "2x² + 2x", "6x² - 4x", "6x² + 2x"],
-                      answer: 0,
-                    },
-                    {
-                      q: "2(3x + 1) = ؟",
-                      options: ["6x + 1", "6x + 2", "5x + 2", "3x + 2"],
-                      answer: 1,
-                    },
-                    {
-                      q: "عدد حدود 5x³ - 2x + 7:",
-                      options: ["1", "2", "3", "4"],
-                      answer: 2,
-                    },
-                  ],
-                },
+                { title: "الجذور التربيعية", content: '', quiz: [] },
+                { title: "تقدير الجذور التربيعية", content: '', quiz: [] },
+                { title: "الأعداد الحقيقية", content: '', quiz: [] },
+                { title: "نظرية فيثاغورس", content: '', quiz: [] },
+                { title: "عكس نظرية فيثاغورس", content: '', quiz: [] },
+                { title: "تطبيقات على نظرية فيثاغورس", content: '', quiz: [] },
               ],
             },
             {
-              title: "الهندسة والقياس",
+              title: "التناسب والتشابه",
               emoji: "📏",
               lessons: [
-                {
-                  title: "نظرية فيثاغورس",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">نظرية فيثاغورس</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 النظرية:</p><p class="text-slate-300">في المثلث القائم: أ² + ب² = ج²</p><p class="text-slate-300">حيث ج هو الوتر (أطول ضلع)</p></div>`,
-                  quiz: [
-                    {
-                      q: "إذا أ=3، ب=4، الوتر=؟",
-                      options: ["5", "7", "12", "25"],
-                      answer: 0,
-                    },
-                    {
-                      q: "إذا أ=5، ج=13، ب=؟",
-                      options: ["8", "12", "18", "10"],
-                      answer: 1,
-                    },
-                    {
-                      q: "هل 6, 8, 10 ثلاثية فيثاغورس؟",
-                      options: ["نعم", "لا", "ربما", "غير واضح"],
-                      answer: 0,
-                    },
-                    {
-                      q: "الوتر هو:",
-                      options: ["أقصر ضلع", "أطول ضلع", "أي ضلع", "القاعدة"],
-                      answer: 1,
-                    },
-                    {
-                      q: "إذا أ=8، ب=15، الوتر=؟",
-                      options: ["17", "23", "113", "20"],
-                      answer: 0,
-                    },
-                  ],
-                },
-                {
-                  title: "التحويلات الهندسية",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">التحويلات الهندسية</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الأنواع:</p><ul class="text-slate-300 space-y-1 pr-4"><li>الانسحاب (الإزاحة)</li><li>الانعكاس (المرآة)</li><li>الدوران</li><li>التمدد (التكبير/التصغير)</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "الانسحاب يغير:",
-                      options: ["الحجم", "الشكل", "الموقع", "الزوايا"],
-                      answer: 2,
-                    },
-                    {
-                      q: "الانعكاس حول محور y يغير:",
-                      options: ["x إلى -x", "y إلى -y", "كلاهما", "لا شيء"],
-                      answer: 0,
-                    },
-                    {
-                      q: "دوران 180° يعادل:",
-                      options: ["انسحاب", "انعكاس", "تمدد", "تصغير"],
-                      answer: 1,
-                    },
-                    {
-                      q: "التمدد بمعامل 2 يجعل الشكل:",
-                      options: ["أصغر", "أكبر", "نفسه", "مقلوب"],
-                      answer: 1,
-                    },
-                    {
-                      q: "أي تحويل يحافظ على الحجم؟",
-                      options: ["الانسحاب", "التمدد", "التصغير", "التكبير"],
-                      answer: 0,
-                    },
-                  ],
-                },
-                {
-                  title: "التشابه والتطابق",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">التشابه والتطابق</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الفرق:</p><p class="text-slate-300"><strong>التطابق:</strong> نفس الشكل ونفس الحجم</p><p class="text-slate-300"><strong>التشابه:</strong> نفس الشكل لكن حجم مختلف</p></div>`,
-                  quiz: [
-                    {
-                      q: "شكلان متطابقان لهما:",
-                      options: [
-                        "نفس الشكل فقط",
-                        "نفس الحجم فقط",
-                        "نفس الشكل والحجم",
-                        "لا شيء",
-                      ],
-                      answer: 2,
-                    },
-                    {
-                      q: "مثلثان متشابهان زواياهما:",
-                      options: ["مختلفة", "متساوية", "متكاملة", "متتامة"],
-                      answer: 1,
-                    },
-                    {
-                      q: "نسبة التشابه 1:2 تعني:",
-                      options: [
-                        "نفس الحجم",
-                        "الثاني ضعف الأول",
-                        "الأول ضعف الثاني",
-                        "لا علاقة",
-                      ],
-                      answer: 1,
-                    },
-                    {
-                      q: "شكلان متشابهان أضلاعهما:",
-                      options: ["متساوية", "متناسبة", "مختلفة", "لا علاقة"],
-                      answer: 1,
-                    },
-                    {
-                      q: "كل الدوائر:",
-                      options: ["متطابقة", "متشابهة", "مختلفة", "لا علاقة"],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "حجم المنشور والأسطوانة",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">حجم المنشور والأسطوانة</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الصيغ:</p><ul class="text-slate-300 space-y-1 pr-4"><li>حجم المنشور = مساحة القاعدة × الارتفاع</li><li>حجم الأسطوانة = π × نق² × ع</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "حجم منشور مساحة قاعدته 20 وارتفاعه 5:",
-                      options: ["25", "100", "200", "400"],
-                      answer: 1,
-                    },
-                    {
-                      q: "حجم أسطوانة نصف قطرها 3 وارتفاعها 10 (تقريباً):",
-                      options: ["90π", "30π", "9π", "100π"],
-                      answer: 0,
-                    },
-                    {
-                      q: "إذا تضاعف ارتفاع المنشور، الحجم:",
-                      options: ["يتضاعف", "يتربع", "لا يتغير", "ينتصف"],
-                      answer: 0,
-                    },
-                    {
-                      q: "وحدة قياس الحجم:",
-                      options: ["سم", "سم²", "سم³", "سم⁴"],
-                      answer: 2,
-                    },
-                    {
-                      q: "حجم مكعب ضلعه 3 سم:",
-                      options: ["9", "18", "27", "36"],
-                      answer: 2,
-                    },
-                  ],
-                },
-                {
-                  title: "مساحة سطح المنشور والأسطوانة",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">مساحة سطح المنشور والأسطوانة</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الصيغ:</p><ul class="text-slate-300 space-y-1 pr-4"><li>مساحة سطح المنشور = 2 × مساحة القاعدة + محيط القاعدة × الارتفاع</li><li>مساحة سطح الأسطوانة = 2πنق² + 2πنق × ع</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "مساحة سطح مكعب ضلعه 4:",
-                      options: ["64", "96", "24", "16"],
-                      answer: 1,
-                    },
-                    {
-                      q: "عدد أوجه المنشور الثلاثي:",
-                      options: ["3", "4", "5", "6"],
-                      answer: 2,
-                    },
-                    {
-                      q: "مساحة سطح أسطوانة تشمل:",
-                      options: [
-                        "قاعدتين فقط",
-                        "سطح جانبي فقط",
-                        "قاعدتين + سطح جانبي",
-                        "لا شيء",
-                      ],
-                      answer: 2,
-                    },
-                    {
-                      q: "وحدة مساحة السطح:",
-                      options: ["سم", "سم²", "سم³", "م"],
-                      answer: 1,
-                    },
-                    {
-                      q: "مساحة سطح متوازي مستطيلات أبعاده 2×3×4:",
-                      options: ["24", "52", "48", "26"],
-                      answer: 1,
-                    },
-                  ],
-                },
+                { title: "معدلات التغيير", content: '', quiz: [] },
+                { title: "النسبة والتناسب", content: '', quiz: [] },
+                { title: "حل مسائل التناسب", content: '', quiz: [] },
+                { title: "معدل التغيير الثابت", content: '', quiz: [] },
+                { title: "الأشكال المتشابهة", content: '', quiz: [] },
+                { title: "نظريات التشابه في المثلثات", content: '', quiz: [] },
+                { title: "نسب الأطوال والمساحات", content: '', quiz: [] },
               ],
             },
             {
-              title: "الإحصاء والاحتمالات",
+              title: "النسبة المئوية",
+              emoji: "💯",
+              lessons: [
+                { title: "النسبة المئوية", content: '', quiz: [] },
+                { title: "تطبيقات النسبة المئوية", content: '', quiz: [] },
+                { title: "نسبة التغيير", content: '', quiz: [] },
+                { title: "الربح والخسارة والخصم والضريبة", content: '', quiz: [] },
+              ],
+            },
+            {
+              title: "الهندسة والاستدلال المكاني",
+              emoji: "📐",
+              lessons: [
+                { title: "الزوايا المتكونة من مستقيمين متوازيين وقاطع", content: '', quiz: [] },
+                { title: "زوايا المثلث", content: '', quiz: [] },
+                { title: "أنواع المثلثات", content: '', quiz: [] },
+                { title: "متطابقة المثلثات", content: '', quiz: [] },
+                { title: "الرباعيات وأنواعها", content: '', quiz: [] },
+                { title: "التحولات الهندسية (الانسحاب والانعكاس)", content: '', quiz: [] },
+                { title: "التحولات الهندسية (الدوران والتشابه)", content: '', quiz: [] },
+              ],
+            },
+            {
+              title: "الإحصاء",
               emoji: "📊",
               lessons: [
-                {
-                  title: "المدى والانحراف المعياري",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">المدى والانحراف المعياري</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 المفاهيم:</p><ul class="text-slate-300 space-y-1 pr-4"><li>المدى = أكبر قيمة - أصغر قيمة</li><li>الانحراف المعياري: مقياس تشتت البيانات</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "المدى لـ 3, 7, 1, 9, 5:",
-                      options: ["4", "6", "8", "10"],
-                      answer: 2,
-                    },
-                    {
-                      q: "إذا كانت البيانات متقاربة، الانحراف المعياري:",
-                      options: ["كبير", "صغير", "صفر", "سالب"],
-                      answer: 1,
-                    },
-                    {
-                      q: "المدى لـ 10, 10, 10:",
-                      options: ["0", "10", "30", "20"],
-                      answer: 0,
-                    },
-                    {
-                      q: "الانحراف المعياري يقيس:",
-                      options: ["المركز", "التشتت", "النسبة", "الميل"],
-                      answer: 1,
-                    },
-                    {
-                      q: "المدى لـ 2, 5, 8, 11, 14:",
-                      options: ["9", "12", "3", "14"],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "الاحتمالات المركبة",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">الاحتمالات المركبة</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 القواعد:</p><ul class="text-slate-300 space-y-1 pr-4"><li>P(A و B) = P(A) × P(B) (أحداث مستقلة)</li><li>P(A أو B) = P(A) + P(B) - P(A و B)</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "احتمال ظهور صورة مرتين في رمي عملة مرتين:",
-                      options: ["1/2", "1/4", "3/4", "1"],
-                      answer: 1,
-                    },
-                    {
-                      q: "رمي نرد مرتين، احتمال 6 مرتين:",
-                      options: ["1/6", "1/12", "1/36", "2/6"],
-                      answer: 2,
-                    },
-                    {
-                      q: "حدثان مستقلان:",
-                      options: [
-                        "يؤثران ببعض",
-                        "لا يؤثران",
-                        "متنافيان",
-                        "متكاملان",
-                      ],
-                      answer: 1,
-                    },
-                    {
-                      q: "P(A) = 0.3, P(B) = 0.5 (مستقلان)، P(A و B):",
-                      options: ["0.8", "0.15", "0.2", "0.35"],
-                      answer: 1,
-                    },
-                    {
-                      q: "احتمال عدم وقوع حدث احتماله 0.7:",
-                      options: ["0.7", "0.3", "1", "0"],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "التمثيلات البيانية المتقدمة",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">التمثيلات البيانية المتقدمة</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 الأنواع المتقدمة:</p><ul class="text-slate-300 space-y-1 pr-4"><li>الصندوق وطرفيه (Box Plot)</li><li>الرسم النقطي (Scatter Plot)</li><li>المضلع التكراري</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "الصندوق وطرفيه يظهر:",
-                      options: [
-                        "الوسط فقط",
-                        "الوسيط والربيعيات",
-                        "المنوال",
-                        "المتوسط",
-                      ],
-                      answer: 1,
-                    },
-                    {
-                      q: "الرسم النقطي يستخدم لـ:",
-                      options: [
-                        "المقارنة",
-                        "العلاقة بين متغيرين",
-                        "التكرار",
-                        "النسبة",
-                      ],
-                      answer: 1,
-                    },
-                    {
-                      q: "الربيع الأول (Q1) يقسم:",
-                      options: ["25% أدنى", "50% أدنى", "75% أدنى", "100%"],
-                      answer: 0,
-                    },
-                    {
-                      q: "المدى الربيعي = ؟",
-                      options: ["Q3 - Q1", "Q3 + Q1", "Q2 - Q1", "Q3 × Q1"],
-                      answer: 0,
-                    },
-                    {
-                      q: "النقاط المتطرفة (outliers):",
-                      options: [
-                        "في المنتصف",
-                        "بعيدة عن البقية",
-                        "قريبة من الوسط",
-                        "لا وجود لها",
-                      ],
-                      answer: 1,
-                    },
-                  ],
-                },
-                {
-                  title: "العد والتوافيق",
-                  content: `<h3 class="text-xl font-bold text-cyan-300 mb-4">العد والتوافيق</h3><div class="bg-slate-800/50 rounded-xl p-4 mb-4"><p class="text-cyan-200 font-bold mb-2">📌 مبادئ العد:</p><ul class="text-slate-300 space-y-1 pr-4"><li>مبدأ الضرب: إذا كان هناك m طريقة و n طريقة، فالإجمالي m × n</li><li>التباديل: ترتيب مهم P(n,r) = n!/(n-r)!</li><li>التوافيق: ترتيب غير مهم C(n,r) = n!/[r!(n-r)!]</li></ul></div>`,
-                  quiz: [
-                    {
-                      q: "عدد طرق ترتيب 3 أشخاص:",
-                      options: ["3", "6", "9", "12"],
-                      answer: 1,
-                    },
-                    {
-                      q: "4! = ؟",
-                      options: ["4", "12", "24", "120"],
-                      answer: 2,
-                    },
-                    {
-                      q: "C(5,2) = ؟",
-                      options: ["5", "10", "20", "60"],
-                      answer: 1,
-                    },
-                    {
-                      q: "عدد طرق اختيار 2 من 4 (بدون ترتيب):",
-                      options: ["4", "6", "8", "12"],
-                      answer: 1,
-                    },
-                    {
-                      q: "P(4,2) = ؟",
-                      options: ["6", "8", "12", "24"],
-                      answer: 2,
-                    },
-                  ],
-                },
+                { title: "أساليب جمع البيانات", content: '', quiz: [] },
+                { title: "تنظيم البيانات وعرضها", content: '', quiz: [] },
+                { title: "مقاييس النزعة المركزية", content: '', quiz: [] },
+                { title: "مقاييس التشتت", content: '', quiz: [] },
+                { title: "المخطط الصندوقي", content: '', quiz: [] },
+                { title: "مخططات التشتت والارتباط", content: '', quiz: [] },
+                { title: "الاستنتاج الإحصائي", content: '', quiz: [] },
+              ],
+            },
+            {
+              title: "الاحتمالات",
+              emoji: "🎲",
+              lessons: [
+                { title: "الاحتمال التجريبي والنظري", content: '', quiz: [] },
+                { title: "احتمال الحادثة وحادثتها المتممة", content: '', quiz: [] },
+                { title: "احتمال الحوادث المستقلة", content: '', quiz: [] },
+                { title: "احتمال الحوادث المتنافية", content: '', quiz: [] },
+              ],
+            },
+            {
+              title: "القياس (المساحة والحجم)",
+              emoji: "📦",
+              lessons: [
+                { title: "المساحة الجانبية والكلية للمنشور", content: '', quiz: [] },
+                { title: "حجم المنشور", content: '', quiz: [] },
+                { title: "المساحة الجانبية والكلية للاسطوانة", content: '', quiz: [] },
+                { title: "حجم الاسطوانة", content: '', quiz: [] },
+                { title: "الهرم والمخروط (المساحة)", content: '', quiz: [] },
+                { title: "الهرم والمخروط (الحجم)", content: '', quiz: [] },
+              ],
+            },
+            {
+              title: "الجبر (المعادلات والمتباينات)",
+              emoji: "⚖️",
+              lessons: [
+                { title: "التعابير الجبرية", content: '', quiz: [] },
+                { title: "حل المعادلات الخطية ذات المتغير الواحد", content: '', quiz: [] },
+                { title: "حل المعادلات ذات الخطوتين", content: '', quiz: [] },
+                { title: "المتباينات وحلها", content: '', quiz: [] },
+                { title: "رسم حل المتباينات على خط الأعداد", content: '', quiz: [] },
+                { title: "تطبيقات المعادلات والمتباينات", content: '', quiz: [] },
+              ],
+            },
+            {
+              title: "الجبر (الدوال الخطية)",
+              emoji: "📈",
+              lessons: [
+                { title: "الدوال والعلاقات", content: '', quiz: [] },
+                { title: "الميل", content: '', quiz: [] },
+                { title: "الدالة الخطية", content: '', quiz: [] },
+                { title: "كتابة معادلة الدالة الخطية", content: '', quiz: [] },
+                { title: "المعادلات المتزامنة (حل المنظومات)", content: '', quiz: [] },
               ],
             },
           ],
@@ -2765,7 +2085,7 @@
 
       function showUnits(grade) {
         if (currentUser) {
-          _proceedToUnits(grade);
+          _proceedToUnits(currentUser.grade_level);
         } else {
           showAuthModal('register', grade);
         }
@@ -3500,9 +2820,20 @@
           document.getElementById('hero-points').textContent = currentUser.total_points;
           updateHeroProgress();
           updateContinueButton();
+          // أظهر فقط بطاقة الصف الخاص بالطالبة
+          const gradeCards = document.getElementById('subjects-grid');
+          if (gradeCards) {
+            gradeCards.querySelectorAll('[onclick]').forEach(card => {
+              const cardGrade = card.getAttribute('onclick').includes("'first'") ? 'first' : 'second';
+              card.style.display = cardGrade === currentUser.grade_level ? '' : 'none';
+            });
+          }
         } else {
           document.getElementById('user-bar').classList.add('hidden');
           document.getElementById('guest-bar').classList.remove('hidden');
+          // أظهر كلا الصفين للزوار
+          const gradeCards = document.getElementById('subjects-grid');
+          if (gradeCards) gradeCards.querySelectorAll('[onclick]').forEach(c => c.style.display = '');
           document.getElementById('hero-user-card').classList.add('hidden');
           document.getElementById('hero-guest-row').classList.remove('hidden');
           const continueBtn = document.getElementById('continue-learning-btn');

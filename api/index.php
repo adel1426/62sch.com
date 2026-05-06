@@ -92,10 +92,12 @@ try {
             handle_admin_student_progress((int)$m[1]);
         case preg_match('#^admin/students/(\d+)$#', $path, $m) && $method === 'DELETE':
             handle_admin_student_delete((int)$m[1]);
-        case $path === 'admin/reset/scores'   && $method === 'DELETE':
+        case $path === 'admin/reset/scores'      && $method === 'DELETE':
             handle_admin_reset_scores($_GET['grade'] ?? '');
-        case $path === 'admin/reset/students' && $method === 'DELETE':
+        case $path === 'admin/reset/students'    && $method === 'DELETE':
             handle_admin_reset_students($_GET['grade'] ?? '');
+        case $path === 'admin/reset/curriculum'  && $method === 'DELETE':
+            handle_admin_reset_curriculum($_GET['grade'] ?? '');
 
         // ── رفع الصور ──
         case $path === 'upload'            && $method === 'POST': handle_upload();
