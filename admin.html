@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
@@ -1353,97 +1353,8 @@
       }
 
       const CUR = {
-        first: {
-          name: "الأول متوسط",
-          units: [
-            {
-              title: "الأعداد والعمليات عليها",
-              lessons: [
-                "القوى والأسس",
-                "ترتيب العمليات",
-                "الأعداد الصحيحة والقيمة المطلقة",
-                "العمليات على الأعداد الصحيحة",
-                "الكسور الاعتيادية والعشرية",
-                "النسبة والتناسب",
-                "النسبة المئوية",
-              ],
-            },
-            {
-              title: "الجبر والدوال",
-              lessons: [
-                "المتغيرات والتعابير الجبرية",
-                "الخصائص",
-                "المعادلات الجبرية",
-                "الدوال",
-                "المتتابعات الحسابية",
-              ],
-            },
-            {
-              title: "الهندسة والقياس",
-              lessons: [
-                "الزوايا: العلاقات بين الزوايا",
-                "المثلثات: تصنيف المثلثات",
-                "الأشكال الرباعية",
-                "المحيط والمساحة",
-                "القياس (النظام المتري)",
-                "الأشكال الثلاثية الأبعاد",
-              ],
-            },
-            {
-              title: "الإحصاء والاحتمالات",
-              lessons: [
-                "مقاييس النزعة المركزية",
-                "تمثيل البيانات",
-                "الاحتمال: حساب احتمال وقوع حدث بسيط",
-                "فضاء العينة",
-              ],
-            },
-          ],
-        },
-        second: {
-          name: "الثاني متوسط",
-          units: [
-            {
-              title: "الأعداد والعمليات عليها",
-              lessons: [
-                "الأعداد النسبية",
-                "القوى والأسس",
-                "الجذور التربيعية",
-                "الأعداد الحقيقية",
-                "التناسب المئوي",
-              ],
-            },
-            {
-              title: "الجبر والدوال",
-              lessons: [
-                "المعادلات والمتباينات",
-                "المتباينات الخطية",
-                "الدوال الخطية",
-                "أنظمة المعادلات الخطية",
-                "كثيرات الحدود",
-              ],
-            },
-            {
-              title: "الهندسة والقياس",
-              lessons: [
-                "نظرية فيثاغورس",
-                "التحويلات الهندسية",
-                "التشابه والتطابق",
-                "حجم المنشور والأسطوانة",
-                "مساحة سطح المنشور والأسطوانة",
-              ],
-            },
-            {
-              title: "الإحصاء والاحتمالات",
-              lessons: [
-                "المدى والانحراف المعياري",
-                "الاحتمالات المركبة",
-                "التمثيلات البيانية المتقدمة",
-                "العد والتوافيق",
-              ],
-            },
-          ],
-        },
+        first:  { name: "الأول متوسط",  units: [] },
+        second: { name: "الثاني متوسط", units: [] },
       };
 
       let grade = "first",
@@ -3257,22 +3168,13 @@
             const r = await fetch(`${API}/curriculum?gradeKey=${g}`, { credentials: 'include' });
             if (!r.ok) continue;
             const data = await r.json();
-            if (!data.units || data.units.length === 0) continue;
-            data.units.forEach(dbUnit => {
-              const ui = dbUnit.unit_index;
-              while (CUR[g].units.length <= ui) {
-                CUR[g].units.push({ title: `وحدة ${CUR[g].units.length + 1}`, emoji: '📚', lessons: [] });
-              }
-              CUR[g].units[ui].title = dbUnit.title;
-              CUR[g].units[ui].emoji = dbUnit.emoji;
-              (dbUnit.lessons || []).forEach(dbLesson => {
-                const li = dbLesson.lesson_index;
-                while (CUR[g].units[ui].lessons.length <= li) {
-                  CUR[g].units[ui].lessons.push(`درس ${CUR[g].units[ui].lessons.length + 1}`);
-                }
-                CUR[g].units[ui].lessons[li] = dbLesson.title;
-              });
-            });
+            CUR[g].units = (data.units || []).map(dbUnit => ({
+              title:   dbUnit.title,
+              emoji:   dbUnit.emoji || '📚',
+              lessons: (dbUnit.lessons || [])
+                         .sort((a, b) => a.lesson_index - b.lesson_index)
+                         .map(l => l.title),
+            }));
           } catch {}
         }
       }
