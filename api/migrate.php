@@ -36,6 +36,16 @@ function migration_statements(string $sql): array {
     ));
 }
 
+function run_migration_statement(PDO $pdo, string $stmt): void {
+    $result = $pdo->query($stmt);
+    if ($result instanceof PDOStatement) {
+        do {
+            $result->fetchAll();
+        } while ($result->nextRowset());
+        $result->closeCursor();
+    }
+}
+
 try {
     $pdo = db();
 
@@ -94,7 +104,7 @@ try {
 
         try {
             foreach ($statements as $stmt) {
-                $pdo->exec($stmt);
+                run_migration_statement($pdo, $stmt);
             }
             $pdo->prepare("INSERT IGNORE INTO migrations (filename) VALUES (?)")->execute([$name]);
             Logger::info("Migration applied: $name");
