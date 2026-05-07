@@ -16,12 +16,12 @@ function handle_admin_stats(): void {
     }
 
     $stmt     = $pdo->query(
-        "SELECT u.id, u.name, u.username, u.grade_level, u.total_points, u.created_at,
+        "SELECT u.id, u.name, u.username, u.grade_level, u.class_name, u.total_points, u.created_at,
                 COUNT(DISTINCT lp.id) AS lessons_done
          FROM users u
          LEFT JOIN lesson_progress lp ON lp.user_id = u.id
-         GROUP BY u.id, u.name, u.username, u.grade_level, u.total_points, u.created_at
-         ORDER BY u.total_points DESC, u.name ASC"
+         GROUP BY u.id, u.name, u.username, u.grade_level, u.class_name, u.total_points, u.created_at
+         ORDER BY u.grade_level ASC, u.class_name ASC, u.total_points DESC, u.name ASC"
     );
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -72,6 +72,7 @@ function handle_admin_stats(): void {
         $s['id']           = $id;
         $s['total_points'] = (int)$s['total_points'];
         $s['lessons_done'] = (int)$s['lessons_done'];
+        $s['class_name']   = $s['class_name'] ?? null;
         $s['videos_done']  = $vCounts[$id] ?? 0;
         $s['avg_score']    = $scoreStats[$id]['avg_score'] ?? null;
 

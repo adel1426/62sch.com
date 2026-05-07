@@ -43,13 +43,14 @@ function handle_me(): void {
     $extra = $isAdmin ? ['csrf_token' => csrf_token(), 'is_viewer' => $isViewer] : [];
 
     if ($studentId) {
-        $stmt = db()->prepare("SELECT id, name, grade_level, total_points FROM users WHERE id = ?");
+        $stmt = db()->prepare("SELECT id, name, grade_level, class_name, total_points FROM users WHERE id = ?");
         $stmt->execute([$studentId]);
         $u = $stmt->fetch();
         send_json(array_merge(['isAdmin' => $isAdmin, 'user' => $u ? [
             'id'           => (int)$u['id'],
             'name'         => $u['name'],
             'grade_level'  => $u['grade_level'],
+            'class_name'   => $u['class_name'] ?? null,
             'total_points' => (int)$u['total_points'],
         ] : null], $extra));
     }
@@ -58,13 +59,14 @@ function handle_me(): void {
 
 function handle_register(): void {
     rate_limit('register', 5, 3600);
-    $b        = read_json_body();
-    $name     = trim($b['name'] ?? '');
-    $username = strtolower(trim($b['username'] ?? ''));
-    $password = $b['password'] ?? '';
-    $grade    = $b['grade_level'] ?? '';
+    $b          = read_json_body();
+    $name       = trim($b['name'] ?? '');
+    $username   = strtolower(trim($b['username'] ?? ''));
+    $password   = $b['password'] ?? '';
+    $grade      = $b['grade_level'] ?? '';
+    $class_name = trim($b['class_name'] ?? '');
 
-    if (!$name || !$username || !$password || !$grade) {
+    if (!$name || !$username || !$password || !$grade || !$class_name) {
         send_json(['error' => 'جميع الحقول مطلوبة'], 400);
     }
     if (!in_array($grade, ['first', 'second'])) {
@@ -82,9 +84,9 @@ function handle_register(): void {
 
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $stmt = db()->prepare(
-        "INSERT INTO users (name, username, password_hash, grade_level) VALUES (?,?,?,?)"
+        "INSERT INTO users (name, username, password_hash, grade_level, class_name) VALUES (?,?,?,?,?)"
     );
-    $stmt->execute([$name, $username, $hash, $grade]);
+    $stmt->execute([$name, $username, $hash, $grade, $class_name]);
     $id = (int)db()->lastInsertId();
 
     start_session_safe();
@@ -92,11 +94,12 @@ function handle_register(): void {
     $_SESSION['student_name']  = $name;
     $_SESSION['student_grade'] = $grade;
 
-    Logger::info('Student registered', ['id' => $id, 'grade' => $grade]);
+    Logger::info('Student registered', ['id' => $id, 'grade' => $grade, 'class' => $class_name]);
     send_json(['success' => true, 'user' => [
         'id'           => $id,
         'name'         => $name,
         'grade_level'  => $grade,
+        'class_name'   => $class_name,
         'total_points' => 0,
     ]], 201);
 }

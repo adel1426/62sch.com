@@ -885,11 +885,16 @@
                 <div class="card">
                   <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
                     <div class="font-black text-sm" style="color:#2563eb">👩‍🎓 طالبات أول متوسط</div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 flex-wrap">
                       <input id="s-search-first" type="text" placeholder="🔍 بحث بالاسم..."
                              oninput="filterStudents('first')"
                              class="border rounded-xl px-3 py-1.5 text-sm"
-                             style="border-color:rgba(37,99,235,0.25);outline:none;font-family:inherit;width:155px;">
+                             style="border-color:rgba(37,99,235,0.25);outline:none;font-family:inherit;width:140px;">
+                      <select id="s-class-first" onchange="filterStudents('first')"
+                              class="border rounded-xl px-2 py-1.5 text-sm"
+                              style="border-color:rgba(37,99,235,0.25);outline:none;font-family:inherit;color:#2d2640;background:white">
+                        <option value="">كل الفصول</option>
+                      </select>
                       <button onclick="exportStudentsCSV('first')"
                               class="text-xs px-3 py-1.5 rounded-xl font-bold flex-shrink-0"
                               style="background:rgba(5,150,105,0.08);color:#059669;border:1px solid rgba(5,150,105,0.2)">
@@ -902,6 +907,7 @@
                       <thead>
                         <tr style="border-bottom:2px solid rgba(37,99,235,0.1);">
                           <th class="text-right px-3 py-2 text-xs font-black" style="color:#94a3b8">الاسم</th>
+                          <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">الفصل</th>
                           <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">النقاط ⭐</th>
                           <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">دروس ✅</th>
                           <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">فيديو 📹</th>
@@ -911,7 +917,7 @@
                         </tr>
                       </thead>
                       <tbody id="students-tbody-first">
-                        <tr><td colspan="7" class="text-center py-10 text-slate-400">جاري التحميل...</td></tr>
+                        <tr><td colspan="8" class="text-center py-10 text-slate-400">جاري التحميل...</td></tr>
                       </tbody>
                     </table>
                   </div>
@@ -975,11 +981,16 @@
                 <div class="card">
                   <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
                     <div class="font-black text-sm" style="color:#059669">👩‍🎓 طالبات ثاني متوسط</div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 flex-wrap">
                       <input id="s-search-second" type="text" placeholder="🔍 بحث بالاسم..."
                              oninput="filterStudents('second')"
                              class="border rounded-xl px-3 py-1.5 text-sm"
-                             style="border-color:rgba(5,150,105,0.25);outline:none;font-family:inherit;width:155px;">
+                             style="border-color:rgba(5,150,105,0.25);outline:none;font-family:inherit;width:140px;">
+                      <select id="s-class-second" onchange="filterStudents('second')"
+                              class="border rounded-xl px-2 py-1.5 text-sm"
+                              style="border-color:rgba(5,150,105,0.25);outline:none;font-family:inherit;color:#2d2640;background:white">
+                        <option value="">كل الفصول</option>
+                      </select>
                       <button onclick="exportStudentsCSV('second')"
                               class="text-xs px-3 py-1.5 rounded-xl font-bold flex-shrink-0"
                               style="background:rgba(5,150,105,0.08);color:#059669;border:1px solid rgba(5,150,105,0.2)">
@@ -992,6 +1003,7 @@
                       <thead>
                         <tr style="border-bottom:2px solid rgba(5,150,105,0.1);">
                           <th class="text-right px-3 py-2 text-xs font-black" style="color:#94a3b8">الاسم</th>
+                          <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">الفصل</th>
                           <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">النقاط ⭐</th>
                           <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">دروس ✅</th>
                           <th class="text-center px-3 py-2 text-xs font-black" style="color:#94a3b8">فيديو 📹</th>
@@ -1001,7 +1013,7 @@
                         </tr>
                       </thead>
                       <tbody id="students-tbody-second">
-                        <tr><td colspan="7" class="text-center py-10 text-slate-400">جاري التحميل...</td></tr>
+                        <tr><td colspan="8" class="text-center py-10 text-slate-400">جاري التحميل...</td></tr>
                       </tbody>
                     </table>
                   </div>
@@ -1814,25 +1826,38 @@
         return d.toLocaleDateString('ar-SA', { month: 'short', day: 'numeric' });
       }
 
+      function populateClassFilter(g, students) {
+        const sel = document.getElementById(`s-class-${g}`);
+        if (!sel) return;
+        const classes = [...new Set(students.map(s => s.class_name).filter(Boolean))].sort();
+        const current = sel.value;
+        sel.innerHTML = '<option value="">كل الفصول</option>' +
+          classes.map(c => `<option value="${escapeHtml(c)}" ${current===c?'selected':''}>${escapeHtml(c)}</option>`).join('');
+      }
+
       function renderStudentsTable(g, students) {
+        populateClassFilter(g, students);
         const tbody = document.getElementById(`students-tbody-${g}`);
-        const searchVal = (document.getElementById(`s-search-${g}`)?.value || '').trim().toLowerCase();
-        const filtered = searchVal
-          ? students.filter(s => s.name.toLowerCase().includes(searchVal) || s.username.toLowerCase().includes(searchVal))
-          : students;
+        const searchVal  = (document.getElementById(`s-search-${g}`)?.value || '').trim().toLowerCase();
+        const classFilter = document.getElementById(`s-class-${g}`)?.value || '';
+        let filtered = students;
+        if (searchVal)   filtered = filtered.filter(s => s.name.toLowerCase().includes(searchVal) || s.username.toLowerCase().includes(searchVal));
+        if (classFilter) filtered = filtered.filter(s => s.class_name === classFilter);
         if (!filtered.length) {
-          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400 text-sm">لا توجد نتائج</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 text-sm">لا توجد نتائج</td></tr>`;
           return;
         }
         tbody.innerHTML = filtered.map(s => {
           const avgScore = s.avg_score === null || s.avg_score === undefined
             ? '—' : `${Math.round(Number(s.avg_score))}%`;
+          const classLabel = s.class_name ? `<span class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold" style="background:rgba(124,58,237,0.08);color:#7c3aed;">${escapeHtml(s.class_name)}</span>` : '<span style="color:#cbd5e1">—</span>';
           return `<tr class="border-b cursor-pointer transition hover:bg-purple-50/40"
                       onclick="showStudentModal(${s.id})" style="border-color:rgba(124,58,237,0.07)">
             <td class="px-3 py-3">
               <div class="font-bold text-sm" style="color:#2d2640">${escapeHtml(s.name)}</div>
               <div class="text-xs" style="color:#94a3b8">@${escapeHtml(s.username)}</div>
             </td>
+            <td class="px-3 py-3 text-center">${classLabel}</td>
             <td class="px-3 py-3 text-center font-black text-sm" style="color:#ec4899">${s.total_points}</td>
             <td class="px-3 py-3 text-center font-bold text-sm" style="color:#10b981">${s.lessons_done}</td>
             <td class="px-3 py-3 text-center font-bold text-sm" style="color:#059669">${s.videos_done}</td>
@@ -2015,7 +2040,7 @@
                  style="background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(236,72,153,0.12))">👩‍🎓</div>
             <div>
               <div class="font-black text-base" style="color:#2d2640">${escapeHtml(s.name)}</div>
-              <div class="text-xs" style="color:#94a3b8">${gl} · @${escapeHtml(s.username)}</div>
+              <div class="text-xs" style="color:#94a3b8">${gl}${s.class_name ? ` · فصل ${escapeHtml(s.class_name)}` : ''} · @${escapeHtml(s.username)}</div>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2 mb-4">

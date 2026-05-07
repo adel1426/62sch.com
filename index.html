@@ -710,6 +710,12 @@
                 </select>
               </div>
               <div>
+                <label class="text-xs font-bold mb-1 block" style="color:#64748b">الفصل الدراسي</label>
+                <input id="reg-class" type="text" placeholder="مثال: أ، ب، ج ..."
+                       class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none"
+                       style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640"/>
+              </div>
+              <div>
                 <label class="text-xs font-bold mb-1 block" style="color:#64748b">كلمة المرور</label>
                 <input id="reg-password" type="password" placeholder="٦ أحرف على الأقل" dir="ltr"
                        class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none"
@@ -2057,13 +2063,14 @@
 
       // ── تسجيل حساب جديد ──
       async function doRegister() {
-        const name     = document.getElementById('reg-name').value.trim();
-        const username = document.getElementById('reg-username').value.trim();
-        const grade    = document.getElementById('reg-grade').value;
-        const password = document.getElementById('reg-password').value;
-        const errEl    = document.getElementById('reg-error');
+        const name      = document.getElementById('reg-name').value.trim();
+        const username  = document.getElementById('reg-username').value.trim();
+        const grade     = document.getElementById('reg-grade').value;
+        const className = document.getElementById('reg-class').value.trim();
+        const password  = document.getElementById('reg-password').value;
+        const errEl     = document.getElementById('reg-error');
         errEl.classList.add('hidden');
-        if (!name || !username || !grade || !password) {
+        if (!name || !username || !grade || !className || !password) {
           errEl.textContent = 'يرجى تعبئة جميع الحقول';
           errEl.classList.remove('hidden');
           return;
@@ -2073,7 +2080,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ name, username, grade_level: grade, password }),
+            body: JSON.stringify({ name, username, grade_level: grade, class_name: className, password }),
           });
           const d = await r.json();
           if (!r.ok) {
