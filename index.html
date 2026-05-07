@@ -709,18 +709,30 @@
               </div>
               <div>
                 <label class="text-xs font-bold mb-1 block" style="color:#64748b">الفصل الدراسي</label>
-                <input id="reg-class" type="text" placeholder="مثال: أ، ب، ج ..."
-                       class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none"
-                       style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640"/>
+                <select id="reg-class"
+                        class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none"
+                        style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640;background:white">
+                  <option value="">اختاري الفصل</option>
+                  <option value="1">الفصل 1</option>
+                  <option value="2">الفصل 2</option>
+                  <option value="3">الفصل 3</option>
+                  <option value="4">الفصل 4</option>
+                  <option value="5">الفصل 5</option>
+                  <option value="6">الفصل 6</option>
+                  <option value="7">الفصل 7</option>
+                  <option value="8">الفصل 8</option>
+                  <option value="9">الفصل 9</option>
+                  <option value="10">الفصل 10</option>
+                </select>
               </div>
               <div>
                 <label class="text-xs font-bold mb-1 block" style="color:#64748b">كلمة المرور</label>
                 <div class="relative">
                   <input id="reg-password" type="password" placeholder="٦ أحرف على الأقل" dir="ltr"
-                         class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none pr-10"
-                         style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640"/>
+                         class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none"
+                         style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640;padding-right:2.5rem"/>
                   <button type="button" onclick="togglePass('reg-password',this)"
-                          class="absolute left-3 top-1/2 -translate-y-1/2 text-base"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-base"
                           style="background:none;border:none;cursor:pointer;color:#94a3b8;line-height:1">👁</button>
                 </div>
               </div>
@@ -751,10 +763,10 @@
                 <label class="text-xs font-bold mb-1 block" style="color:#64748b">كلمة المرور</label>
                 <div class="relative">
                   <input id="login-password-student" type="password" placeholder="كلمة المرور" dir="ltr"
-                         class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none pr-10"
-                         style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640"/>
+                         class="w-full border rounded-2xl px-4 py-3 text-sm focus:outline-none"
+                         style="border-color:rgba(124,58,237,0.2);font-family:Cairo,sans-serif;color:#2d2640;padding-right:2.5rem"/>
                   <button type="button" onclick="togglePass('login-password-student',this)"
-                          class="absolute left-3 top-1/2 -translate-y-1/2 text-base"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-base"
                           style="background:none;border:none;cursor:pointer;color:#94a3b8;line-height:1">👁</button>
                 </div>
               </div>
