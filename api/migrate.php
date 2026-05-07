@@ -60,10 +60,14 @@ try {
     $applied = array_flip($applied);
 
     $only = $_GET['file'] ?? null;
+    $force = ($_GET['force'] ?? '') === '1';
     if ($isCli) {
         foreach ($_SERVER['argv'] ?? [] as $arg) {
             if (str_starts_with($arg, '--file=')) {
                 $only = substr($arg, 7);
+            }
+            if ($arg === '--force') {
+                $force = true;
             }
         }
     }
@@ -94,7 +98,7 @@ try {
             continue;
         }
 
-        if (isset($applied[$name])) {
+        if (isset($applied[$name]) && !$force) {
             migrate_log("  [تم مسبقًا] $name");
             continue;
         }
