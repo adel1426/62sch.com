@@ -529,9 +529,9 @@
 
 
         <!-- تخطيط رئيسي: شريط جانبي + منطقة محتوى -->
-        <div class="flex flex-col lg:flex-row gap-5">
+        <div id="lesson-layout" class="flex flex-col lg:flex-row gap-5">
           <!-- ── شريط الدروس (يسار في RTL) ── -->
-          <div class="lg:w-72 flex-shrink-0">
+          <div id="lesson-sidebar" class="lg:w-72 flex-shrink-0">
             <div class="card">
               <div
                 class="text-xs font-black mb-3 flex items-center gap-2"
@@ -573,7 +573,13 @@
             <!-- حالة: درس محدد -->
             <div id="sel-panel" class="hidden space-y-4">
               <!-- عنوان الدرس -->
-              <div class="card flex items-center justify-between gap-3">
+              <div class="card flex items-center justify-between gap-3 flex-wrap">
+                <button
+                  class="btn btn-cancel py-2 px-3 text-sm"
+                  onclick="backToLessons()"
+                >
+                  ← رجوع للدروس
+                </button>
                 <div>
                   <div
                     id="sel-title"
@@ -1114,7 +1120,7 @@
         await loadCurriculumFromDB();
         await loadCounts();
         buildTree();
-        await pick(0, 0);
+        backToLessons({ reset: true, scroll: false });
         if (isViewer) activateViewerMode();
       }
 
@@ -1300,8 +1306,37 @@
           "grade-tab " + (g === "second" ? "on" : "off");
         document.getElementById("sel-panel").classList.add("hidden");
         document.getElementById("no-sel").classList.remove("hidden");
+        showLessonListMode();
         buildTree();
         renderGradeInsights();
+      }
+
+      function showLessonDetailMode() {
+        document.getElementById("grade-insights")?.classList.add("hidden");
+        document.getElementById("lesson-sidebar")?.classList.add("hidden");
+        document.getElementById("lesson-layout")?.classList.remove("lg:flex-row");
+      }
+
+      function showLessonListMode() {
+        document.getElementById("grade-insights")?.classList.remove("hidden");
+        document.getElementById("lesson-sidebar")?.classList.remove("hidden");
+        document.getElementById("lesson-layout")?.classList.add("lg:flex-row");
+      }
+
+      function backToLessons(options = {}) {
+        if (options.reset !== false) {
+          selU = -1;
+          selL = -1;
+        }
+        showLessonListMode();
+        document.getElementById("sel-panel").classList.add("hidden");
+        document.getElementById("no-sel").classList.remove("hidden");
+        buildTree();
+        renderGradeInsights();
+        if (options.scroll !== false) {
+          document.getElementById("questions-view")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
       }
 
       function buildTree() {
@@ -1411,6 +1446,7 @@
         document.getElementById("sel-count").textContent = "...";
         document.getElementById("no-sel").classList.add("hidden");
         document.getElementById("sel-panel").classList.remove("hidden");
+        showLessonDetailMode();
         buildTree();
         updateGradeIcon();
         cancelEdit();
@@ -1426,7 +1462,7 @@
         document.getElementById("xl-arrow").textContent = "▼";
         await Promise.all([loadQ(), loadContent()]);
         document
-          .getElementById("sel-panel")
+          .getElementById("questions-view")
           .scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
