@@ -193,6 +193,10 @@ if ($step === 'install') {
         }
 
         // ── خطوة 2: استيراد بيانات الأسئلة ──
+        $pdo->exec("DELETE FROM questions");
+        $pdo->exec("ALTER TABLE questions AUTO_INCREMENT = 1");
+        ok("✅ تم مسح الأسئلة القديمة قبل الاستيراد");
+
         $sqlFile = __DIR__ . '/data.sql';
         if (!file_exists($sqlFile)) {
             fail("⚠️ ملف data.sql غير موجود — تأكدي من رفعه بجوار install.php");
