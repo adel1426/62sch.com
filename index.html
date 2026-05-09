@@ -1040,84 +1040,79 @@
       function toArabicDigits(str) {
         if (str === null || str === undefined) return '';
         str = String(str);
-
         const ar = '٠١٢٣٤٥٦٧٨٩';
-        const d2ar = s => String(s).replace(/[0-9]/g, c => ar[+c]);
 
-        // نظام حفظ المحتوى الرياضي لحمايته من تحويل الأرقام في الخطوة 8
-        const saved = [];
-        const save = html => { saved.push(html); return `\x00${saved.length - 1}\x00`; };
-        // CSS-only radical: check-mark shape via borders + vinculum border-top
-        const radical = (inner, deg) => {
-          const degHtml = deg ? `<sup style="font-size:0.7em;vertical-align:0.5em;">${deg}</sup>` : '';
-          return save(`<span style="display:inline-flex;align-items:flex-end;direction:ltr;unicode-bidi:bidi-override;">${degHtml}<span style="display:inline-block;width:0.45em;height:0.7em;border-left:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:skewX(-15deg);flex-shrink:0;margin-right:-1px;"></span><span style="border-top:1.5px solid currentColor;padding:0 3px;display:inline-block;">${inner}</span></span>`);
+        // الخطوة 1: تحويل الأرقام الغربية → عربية أولاً
+        str = str.replace(/[0-9]/g, c => ar[+c]);
+
+        // بعد هذه الخطوة، جميع الأرقام عربية (٠-٩)
+        // التعبيرات الرياضية التالية تعمل على الأرقام العربية وتُنتج HTML
+        // لا حاجة لأي نظام placeholders
+
+        const D = '[٠-٩]'; // نمط رقم عربي
+        const fracSt = 'display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:0.85em;line-height:1.25;direction:ltr;unicode-bidi:bidi-override;';
+        const sepSt  = 'border-top:1px solid currentColor;padding:0 2px;';
+        const mkFrac = (n, d) => `<span style="${fracSt}"><span>${n}</span><span style="${sepSt}">${d}</span></span>`;
+
+        const radSt   = 'display:inline-flex;align-items:flex-end;direction:ltr;unicode-bidi:bidi-override;';
+        const checkSt = 'display:inline-block;width:0.45em;height:0.7em;border-left:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:skewX(-15deg);flex-shrink:0;margin-right:-1px;';
+        const vinSt   = 'border-top:1.5px solid currentColor;padding:0 3px;display:inline-block;';
+        const mkRad = (inner, deg) => {
+          const dh = deg ? `<sup style="font-size:0.7em;vertical-align:0.5em;">${deg}</sup>` : '';
+          return `<span style="${radSt}">${dh}<span style="${checkSt}"></span><span style="${vinSt}">${inner}</span></span>`;
         };
 
-        // 1. الجذور: رمز درجة اختياري + رمز الجذر + (تعبير أو رقم)
-        const rootDeg = {'∛':'3','∜':'4'};
-        str = str.replace(
-          /([0-9]?)[√∛∜](\(([^)]+)\)|([0-9]+(?:[.,][0-9]+)?))/g,
-          (_, numDeg, _full, paren, num) => {
-            const inner = paren !== undefined ? paren : num;
-            const sym = _.match(/[√∛∜]/)[0];
-            const deg = numDeg || rootDeg[sym] || '';
-            return radical(inner, deg);
-          }
-        );
-        // جذر تربيعي بعد رقم درجة بدون محتوى: مثل 2√
-        str = str.replace(/([0-9])[√∛∜]/g, (_, d) => radical('', d));
-        // رمزا الجذر المتبقيان (∛ ∜) بدون رقم
-        str = str.replace(/∛/g, radical('', '3'));
-        str = str.replace(/∜/g, radical('', '4'));
-
-        // 2. الأُس بعلامة ^ — يقبل رقماً أو تعبيراً بين قوسين
-        //    أمثلة: x^2  ،  2^10  ،  x^(-1)  ،  x^(n+1)
-        str = str.replace(/\^(\(([^)]*)\)|(-?[0-9]+(?:\.[0-9]+)?))/g,
-          (_, _full, paren, num) => {
-            const inner = d2ar(paren !== undefined ? paren : num);
-            return save(`<sup>${inner}</sup>`);
-          }
+        // 2. الأُس بعلامة ^ (يقبل أرقام عربية أو تعبير بين قوسين)
+        str = str.replace(new RegExp(`\\^(\\(([^)]*)\\)|(-?${D}+(?:\\.${D}+)?))`, 'g'),
+          (_, _f, paren, num) => `<sup>${paren !== undefined ? paren : num}</sup>`
         );
 
-        // 3. المنخفض (subscript) بعلامة _
-        //    أمثلة: x_1  ،  H_2O
-        str = str.replace(/_([0-9]+)/g, (_, s) => save(`<sub>${d2ar(s)}</sub>`));
+        // 3. المنخفض بعلامة _
+        str = str.replace(new RegExp(`_(${D}+)`, 'g'), (_, s) => `<sub>${s}</sub>`);
 
-        // 4. Unicode superscripts ⁰¹²³⁴⁵⁶⁷⁸⁹ (مع إشارة ⁻ اختياري)
+        // 4. Unicode superscripts ⁰¹²³⁴⁵⁶⁷⁸⁹
         const supMap = {'⁰':'٠','¹':'١','²':'٢','³':'٣','⁴':'٤',
                         '⁵':'٥','⁶':'٦','⁷':'٧','⁸':'٨','⁹':'٩','⁻':'−'};
         str = str.replace(/⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m =>
-          save(`<sup>${m.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g, c => supMap[c] || c)}</sup>`)
+          `<sup>${m.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g, c => supMap[c] || c)}</sup>`
         );
 
         // 5. Unicode subscripts ₀₁₂₃₄₅₆₇₈₉
         const subMap = {'₀':'٠','₁':'١','₂':'٢','₃':'٣','₄':'٤',
                         '₅':'٥','₆':'٦','₇':'٧','₈':'٨','₉':'٩'};
         str = str.replace(/[₀₁₂₃₄₅₆₇₈₉]+/g, m =>
-          save(`<sub>${m.replace(/[₀-₉]/g, c => subMap[c] || c)}</sub>`)
+          `<sub>${m.replace(/[₀-₉]/g, c => subMap[c] || c)}</sub>`
         );
 
-        // 6. كسور Unicode: ½ ⅓ ¼ ¾ ...
-        const frac = (n, d) => save(`<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:0.85em;line-height:1.25;direction:ltr;unicode-bidi:bidi-override;"><span>${n}</span><span style="border-top:1px solid currentColor;padding:0 2px;">${d}</span></span>`);
+        // 6. الجذور — رمز درجة اختياري + جذر + (رقم عربي أو تعبير بين قوسين)
+        const rootDeg = {'∛':'٣','∜':'٤'};
+        str = str.replace(
+          new RegExp(`([٠-٩]?)[√∛∜](\\(([^)]+)\\)|(${D}+(?:[.,]${D}+)?))`, 'g'),
+          (_, numDeg, _f, paren, num) => {
+            const inner = paren !== undefined ? paren : num;
+            const sym = _.match(/[√∛∜]/)[0];
+            return mkRad(inner, numDeg || rootDeg[sym] || '');
+          }
+        );
+        str = str.replace(new RegExp(`([٠-٩])[√∛∜]`, 'g'), (_, d) => mkRad('', d));
+        str = str.replace(/∛/g, mkRad('', '٣'));
+        str = str.replace(/∜/g, mkRad('', '٤'));
+        str = str.replace(/√/g, mkRad('', ''));
+
+        // 7. كسور Unicode: ½ ⅓ ¼ ¾ ...
         const fracMap = {
-          '½': frac(1,2), '⅓': frac(1,3), '⅔': frac(2,3),
-          '¼': frac(1,4), '¾': frac(3,4),
-          '⅕': frac(1,5), '⅖': frac(2,5), '⅗': frac(3,5), '⅘': frac(4,5),
-          '⅙': frac(1,6), '⅚': frac(5,6),
-          '⅛': frac(1,8), '⅜': frac(3,8), '⅝': frac(5,8), '⅞': frac(7,8),
+          '½':mkFrac('١','٢'),'⅓':mkFrac('١','٣'),'⅔':mkFrac('٢','٣'),
+          '¼':mkFrac('١','٤'),'¾':mkFrac('٣','٤'),
+          '⅕':mkFrac('١','٥'),'⅖':mkFrac('٢','٥'),'⅗':mkFrac('٣','٥'),'⅘':mkFrac('٤','٥'),
+          '⅙':mkFrac('١','٦'),'⅚':mkFrac('٥','٦'),
+          '⅛':mkFrac('١','٨'),'⅜':mkFrac('٣','٨'),'⅝':mkFrac('٥','٨'),'⅞':mkFrac('٧','٨'),
         };
         str = str.replace(/[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, c => fracMap[c] || c);
 
-        // 7. كسور نصية n/d — يتجنب URLs والمسارات (/ أو : قبل الرقم)
-        str = str.replace(/(?<![:/.\w])([0-9]+)\/([0-9]+)(?![:/.\w])/g,
-          (_, n, d) => save(`<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:0.85em;line-height:1.25;direction:ltr;unicode-bidi:bidi-override;"><span>${n}</span><span style="border-top:1px solid currentColor;padding:0 2px;">${d}</span></span>`)
+        // 8. كسور نصية ن/د (بعد تحويل الأرقام) — يتجنب URLs
+        str = str.replace(new RegExp(`(?<![:/.\w])(${D}+)\\/(${D}+)(?![:/.\w])`, 'g'),
+          (_, n, d) => mkFrac(n, d)
         );
-
-        // 8. الأرقام العادية (0-9) → عربية — يتخطى الـ placeholders \x00N\x00
-        str = str.replace(/\x00\d+\x00|[0-9]/g, m => m.length === 1 ? ar[+m] : m);
-
-        // استعادة المحتوى الرياضي المحفوظ
-        str = str.replace(/\x00(\d+)\x00/g, (_, i) => saved[+i]);
 
         return str;
       }
