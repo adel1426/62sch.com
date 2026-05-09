@@ -1562,6 +1562,39 @@
         }
       }
 
+      function getFilteredQuestions() {
+        const search = (document.getElementById("q-search")?.value || "").trim().toLowerCase();
+        const filter = document.getElementById("q-filter")?.value || "all";
+        return questions
+          .map((q, i) => ({ q, originalIndex: i }))
+          .filter(({ q }) => {
+            if (search && !q.question_text.toLowerCase().includes(search) &&
+                ![q.option_a,q.option_b,q.option_c,q.option_d].some(o => o?.toLowerCase().includes(search))) return false;
+            if (filter === "no-explanation" && q.explanation) return false;
+            if (filter === "no-image" && q.image_url) return false;
+            return true;
+          });
+      }
+
+      function getQuestionIssues(q) {
+        const issues = [];
+        if (!q.explanation) issues.push("بدون شرح");
+        if (!q.question_text || q.question_text.length < 10) issues.push("نص السؤال قصير");
+        return issues;
+      }
+
+      function renderQualityBar() {
+        const bar = document.getElementById("q-quality-bar");
+        if (!bar || questions.length === 0) { if (bar) bar.classList.add("hidden"); return; }
+        const withExp = questions.filter(q => q.explanation).length;
+        const pct = Math.round((withExp / questions.length) * 100);
+        bar.classList.remove("hidden");
+        bar.innerHTML = `
+          <span class="quality-chip quality-good">✅ ${withExp} بشرح</span>
+          <span class="quality-chip ${questions.length - withExp > 0 ? 'quality-warn' : 'quality-good'}">${questions.length - withExp} بدون شرح</span>
+          <span class="quality-chip quality-good">📊 التغطية: ${pct}%</span>`;
+      }
+
       function renderQ() {
         const el = document.getElementById("q-list");
         const qualityBar = document.getElementById("q-quality-bar");
