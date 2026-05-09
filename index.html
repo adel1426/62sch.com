@@ -1054,12 +1054,10 @@
         const sepSt  = 'border-top:1px solid currentColor;padding:0 2px;';
         const mkFrac = (n, d) => `<span style="${fracSt}"><span>${n}</span><span style="${sepSt}">${d}</span></span>`;
 
-        const radSt   = 'display:inline-flex;align-items:flex-end;direction:ltr;unicode-bidi:bidi-override;';
-        const checkSt = 'display:inline-block;width:0.45em;height:0.7em;border-left:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:skewX(-15deg);flex-shrink:0;margin-right:-1px;';
-        const vinSt   = 'border-top:1.5px solid currentColor;padding:0 3px;display:inline-block;';
         const mkRad = (inner, deg) => {
-          const dh = deg ? `<sup style="font-size:0.7em;vertical-align:0.5em;">${deg}</sup>` : '';
-          return `<span style="${radSt}">${dh}<span style="${checkSt}"></span><span style="${vinSt}">${inner}</span></span>`;
+          const dh = deg ? `<sup style="font-size:0.7em;vertical-align:0.4em;font-family:serif;">${deg}</sup>` : '';
+          const vin = inner ? `<span style="border-top:1.5px solid currentColor;padding:0 2px;display:inline-block;">${inner}</span>` : '';
+          return `<span style="display:inline-flex;align-items:center;direction:ltr;unicode-bidi:bidi-override;">${dh}<span style="font-family:serif;font-size:1.2em;line-height:1;margin-right:-1px;">√</span>${vin}</span>`;
         };
 
         // 2. الأُس بعلامة ^ (يقبل أرقام عربية أو تعبير بين قوسين)
