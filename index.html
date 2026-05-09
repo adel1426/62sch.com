@@ -1044,6 +1044,10 @@
         const ar = '٠١٢٣٤٥٦٧٨٩';
         const d2ar = s => String(s).replace(/[0-9]/g, c => ar[+c]);
 
+        // نظام حفظ المحتوى الرياضي لحمايته من تحويل الأرقام في الخطوة 8
+        const saved = [];
+        const save = html => { saved.push(html); return `\x00${saved.length - 1}\x00`; };
+
         // 1. الجذور: رمز درجة اختياري + رمز الجذر + (تعبير أو رقم)
         //    أمثلة: √9  ،  3√8  ،  ∛27  ،  ∜16  ،  √(x+4)
         const rootDeg = {'∛':'3','∜':'4'};
@@ -1053,69 +1057,72 @@
             const inner = paren !== undefined ? paren : num;
             const sym = _.match(/[√∛∜]/)[0];
             const deg = numDeg ? `<sup>${numDeg}</sup>` : (rootDeg[sym] ? `<sup>${rootDeg[sym]}</sup>` : '');
-            return `<span style="display:inline-block;">${deg}√<span style="text-decoration:overline;padding-right:2px;">${inner}</span></span>`;
+            return save(`<span style="display:inline-block;">${deg}√<span style="text-decoration:overline;padding-right:2px;">${inner}</span></span>`);
           }
         );
         // جذر تربيعي بعد رقم درجة بدون محتوى: مثل 2√
-        str = str.replace(/([0-9])[√∛∜]/g, (_, d) => `<span style="display:inline-block;"><sup>${d}</sup>√</span>`);
+        str = str.replace(/([0-9])[√∛∜]/g, (_, d) => save(`<span style="display:inline-block;"><sup>${d}</sup>√</span>`));
         // رمزا الجذر المتبقيان (∛ ∜) بدون رقم
-        str = str.replace(/∛/g, '<sup>3</sup>√');
-        str = str.replace(/∜/g, '<sup>4</sup>√');
+        str = str.replace(/∛/g, save('<sup>3</sup>√'));
+        str = str.replace(/∜/g, save('<sup>4</sup>√'));
 
         // 2. الأُس بعلامة ^ — يقبل رقماً أو تعبيراً بين قوسين
         //    أمثلة: x^2  ،  2^10  ،  x^(-1)  ،  x^(n+1)
         str = str.replace(/\^(\(([^)]*)\)|(-?[0-9]+(?:\.[0-9]+)?))/g,
           (_, _full, paren, num) => {
             const inner = d2ar(paren !== undefined ? paren : num);
-            return `<sup>${inner}</sup>`;
+            return save(`<sup>${inner}</sup>`);
           }
         );
 
         // 3. المنخفض (subscript) بعلامة _
         //    أمثلة: x_1  ،  H_2O
-        str = str.replace(/_([0-9]+)/g, (_, s) => `<sub>${d2ar(s)}</sub>`);
+        str = str.replace(/_([0-9]+)/g, (_, s) => save(`<sub>${d2ar(s)}</sub>`));
 
         // 4. Unicode superscripts ⁰¹²³⁴⁵⁶⁷⁸⁹ (مع إشارة ⁻ اختياري)
         const supMap = {'⁰':'٠','¹':'١','²':'٢','³':'٣','⁴':'٤',
                         '⁵':'٥','⁶':'٦','⁷':'٧','⁸':'٨','⁹':'٩','⁻':'−'};
         str = str.replace(/⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, m =>
-          `<sup>${m.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g, c => supMap[c] || c)}</sup>`
+          save(`<sup>${m.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]/g, c => supMap[c] || c)}</sup>`)
         );
 
         // 5. Unicode subscripts ₀₁₂₃₄₅₆₇₈₉
         const subMap = {'₀':'٠','₁':'١','₂':'٢','₃':'٣','₄':'٤',
                         '₅':'٥','₆':'٦','₇':'٧','₈':'٨','₉':'٩'};
         str = str.replace(/[₀₁₂₃₄₅₆₇₈₉]+/g, m =>
-          `<sub>${m.replace(/[₀-₉]/g, c => subMap[c] || c)}</sub>`
+          save(`<sub>${m.replace(/[₀-₉]/g, c => subMap[c] || c)}</sub>`)
         );
 
         // 6. كسور Unicode: ½ ⅓ ¼ ¾ ...
         const fracMap = {
-          '½':'<span style="display:inline-block;"><sup>1</sup>⁄<sub>2</sub></span>',
-          '⅓':'<span style="display:inline-block;"><sup>1</sup>⁄<sub>3</sub></span>',
-          '⅔':'<span style="display:inline-block;"><sup>2</sup>⁄<sub>3</sub></span>',
-          '¼':'<span style="display:inline-block;"><sup>1</sup>⁄<sub>4</sub></span>',
-          '¾':'<span style="display:inline-block;"><sup>3</sup>⁄<sub>4</sub></span>',
-          '⅕':'<span style="display:inline-block;"><sup>1</sup>⁄<sub>5</sub></span>',
-          '⅖':'<span style="display:inline-block;"><sup>2</sup>⁄<sub>5</sub></span>',
-          '⅗':'<span style="display:inline-block;"><sup>3</sup>⁄<sub>5</sub></span>',
-          '⅘':'<span style="display:inline-block;"><sup>4</sup>⁄<sub>5</sub></span>',
-          '⅙':'<span style="display:inline-block;"><sup>1</sup>⁄<sub>6</sub></span>',
-          '⅚':'<span style="display:inline-block;"><sup>5</sup>⁄<sub>6</sub></span>',
-          '⅛':'<span style="display:inline-block;"><sup>1</sup>⁄<sub>8</sub></span>',
-          '⅜':'<span style="display:inline-block;"><sup>3</sup>⁄<sub>8</sub></span>',
-          '⅝':'<span style="display:inline-block;"><sup>5</sup>⁄<sub>8</sub></span>',
-          '⅞':'<span style="display:inline-block;"><sup>7</sup>⁄<sub>8</sub></span>',
+          '½': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>2</sub></span>'),
+          '⅓': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>3</sub></span>'),
+          '⅔': save('<span style="display:inline-block;"><sup>2</sup>⁄<sub>3</sub></span>'),
+          '¼': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>4</sub></span>'),
+          '¾': save('<span style="display:inline-block;"><sup>3</sup>⁄<sub>4</sub></span>'),
+          '⅕': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>5</sub></span>'),
+          '⅖': save('<span style="display:inline-block;"><sup>2</sup>⁄<sub>5</sub></span>'),
+          '⅗': save('<span style="display:inline-block;"><sup>3</sup>⁄<sub>5</sub></span>'),
+          '⅘': save('<span style="display:inline-block;"><sup>4</sup>⁄<sub>5</sub></span>'),
+          '⅙': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>6</sub></span>'),
+          '⅚': save('<span style="display:inline-block;"><sup>5</sup>⁄<sub>6</sub></span>'),
+          '⅛': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>8</sub></span>'),
+          '⅜': save('<span style="display:inline-block;"><sup>3</sup>⁄<sub>8</sub></span>'),
+          '⅝': save('<span style="display:inline-block;"><sup>5</sup>⁄<sub>8</sub></span>'),
+          '⅞': save('<span style="display:inline-block;"><sup>7</sup>⁄<sub>8</sub></span>'),
         };
         str = str.replace(/[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, c => fracMap[c] || c);
 
         // 7. كسور نصية n/d — يتجنب URLs والمسارات (/ أو : قبل الرقم)
         str = str.replace(/(?<![:/.\w])([0-9]+)\/([0-9]+)(?![:/.\w])/g,
-          (_, n, d) => `<span style="display:inline-block;"><sup>${n}</sup>⁄<sub>${d}</sub></span>`
+          (_, n, d) => save(`<span style="display:inline-block;"><sup>${n}</sup>⁄<sub>${d}</sub></span>`)
         );
 
-        // 8. الأرقام العادية (0-9) → عربية
+        // 8. الأرقام العادية (0-9) → عربية (المحتوى الرياضي محمي بالـ placeholders)
         str = str.replace(/[0-9]/g, c => ar[+c]);
+
+        // استعادة المحتوى الرياضي المحفوظ
+        str = str.replace(/\x00(\d+)\x00/g, (_, i) => saved[+i]);
 
         return str;
       }
