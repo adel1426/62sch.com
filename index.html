@@ -1046,6 +1046,7 @@
 
         // نظام حفظ المحتوى الرياضي لحمايته من تحويل الأرقام في الخطوة 8
         const saved = [];
+        const M = 'font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;direction:ltr;display:inline-block;';
         const save = html => { saved.push(html); return `\x00${saved.length - 1}\x00`; };
 
         // 1. الجذور: رمز درجة اختياري + رمز الجذر + (تعبير أو رقم)
@@ -1057,14 +1058,14 @@
             const inner = paren !== undefined ? paren : num;
             const sym = _.match(/[√∛∜]/)[0];
             const deg = numDeg ? `<sup>${numDeg}</sup>` : (rootDeg[sym] ? `<sup>${rootDeg[sym]}</sup>` : '');
-            return save(`<span style="display:inline-block;">${deg}√<span style="text-decoration:overline;padding-right:2px;">${inner}</span></span>`);
+            return save(`<span style="${M}">${deg}√<span style="border-top:1px solid currentColor;padding:0 2px;">${inner}</span></span>`);
           }
         );
         // جذر تربيعي بعد رقم درجة بدون محتوى: مثل 2√
-        str = str.replace(/([0-9])[√∛∜]/g, (_, d) => save(`<span style="display:inline-block;"><sup>${d}</sup>√</span>`));
+        str = str.replace(/([0-9])[√∛∜]/g, (_, d) => save(`<span style="${M}"><sup>${d}</sup>√</span>`));
         // رمزا الجذر المتبقيان (∛ ∜) بدون رقم
-        str = str.replace(/∛/g, save('<sup>3</sup>√'));
-        str = str.replace(/∜/g, save('<sup>4</sup>√'));
+        str = str.replace(/∛/g, save(`<span style="${M}"><sup>3</sup>√</span>`));
+        str = str.replace(/∜/g, save(`<span style="${M}"><sup>4</sup>√</span>`));
 
         // 2. الأُس بعلامة ^ — يقبل رقماً أو تعبيراً بين قوسين
         //    أمثلة: x^2  ،  2^10  ،  x^(-1)  ،  x^(n+1)
@@ -1094,28 +1095,19 @@
         );
 
         // 6. كسور Unicode: ½ ⅓ ¼ ¾ ...
+        const frac = (n, d) => save(`<span style="${M}"><sup>${n}</sup>/<sub>${d}</sub></span>`);
         const fracMap = {
-          '½': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>2</sub></span>'),
-          '⅓': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>3</sub></span>'),
-          '⅔': save('<span style="display:inline-block;"><sup>2</sup>⁄<sub>3</sub></span>'),
-          '¼': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>4</sub></span>'),
-          '¾': save('<span style="display:inline-block;"><sup>3</sup>⁄<sub>4</sub></span>'),
-          '⅕': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>5</sub></span>'),
-          '⅖': save('<span style="display:inline-block;"><sup>2</sup>⁄<sub>5</sub></span>'),
-          '⅗': save('<span style="display:inline-block;"><sup>3</sup>⁄<sub>5</sub></span>'),
-          '⅘': save('<span style="display:inline-block;"><sup>4</sup>⁄<sub>5</sub></span>'),
-          '⅙': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>6</sub></span>'),
-          '⅚': save('<span style="display:inline-block;"><sup>5</sup>⁄<sub>6</sub></span>'),
-          '⅛': save('<span style="display:inline-block;"><sup>1</sup>⁄<sub>8</sub></span>'),
-          '⅜': save('<span style="display:inline-block;"><sup>3</sup>⁄<sub>8</sub></span>'),
-          '⅝': save('<span style="display:inline-block;"><sup>5</sup>⁄<sub>8</sub></span>'),
-          '⅞': save('<span style="display:inline-block;"><sup>7</sup>⁄<sub>8</sub></span>'),
+          '½': frac(1,2), '⅓': frac(1,3), '⅔': frac(2,3),
+          '¼': frac(1,4), '¾': frac(3,4),
+          '⅕': frac(1,5), '⅖': frac(2,5), '⅗': frac(3,5), '⅘': frac(4,5),
+          '⅙': frac(1,6), '⅚': frac(5,6),
+          '⅛': frac(1,8), '⅜': frac(3,8), '⅝': frac(5,8), '⅞': frac(7,8),
         };
         str = str.replace(/[½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, c => fracMap[c] || c);
 
         // 7. كسور نصية n/d — يتجنب URLs والمسارات (/ أو : قبل الرقم)
         str = str.replace(/(?<![:/.\w])([0-9]+)\/([0-9]+)(?![:/.\w])/g,
-          (_, n, d) => save(`<span style="display:inline-block;"><sup>${n}</sup>⁄<sub>${d}</sub></span>`)
+          (_, n, d) => save(`<span style="${M}"><sup>${n}</sup>/<sub>${d}</sub></span>`)
         );
 
         // 8. الأرقام العادية (0-9) → عربية (المحتوى الرياضي محمي بالـ placeholders)
