@@ -1113,8 +1113,8 @@
           (_, n, d) => save(`<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:0.85em;line-height:1.25;direction:ltr;unicode-bidi:bidi-override;"><span>${n}</span><span style="border-top:1px solid currentColor;padding:0 2px;">${d}</span></span>`)
         );
 
-        // 8. الأرقام العادية (0-9) → عربية (المحتوى الرياضي محمي بالـ placeholders)
-        str = str.replace(/[0-9]/g, c => ar[+c]);
+        // 8. الأرقام العادية (0-9) → عربية — يتخطى الـ placeholders \x00N\x00
+        str = str.replace(/\x00\d+\x00|[0-9]/g, m => m.length === 1 ? ar[+m] : m);
 
         // استعادة المحتوى الرياضي المحفوظ
         str = str.replace(/\x00(\d+)\x00/g, (_, i) => saved[+i]);
