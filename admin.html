@@ -1066,11 +1066,11 @@
 
       async function apiFetch(url, opts = {}) {
         const method = (opts.method || 'GET').toUpperCase();
+        opts.credentials = opts.credentials ?? 'include';
         if (['POST', 'PUT', 'DELETE'].includes(method)) {
           opts.headers = opts.headers || {};
           if (csrfToken) opts.headers['X-CSRF-Token'] = csrfToken;
         }
-        opts.credentials = opts.credentials ?? 'include';
         return fetch(url, opts);
       }
 
