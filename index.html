@@ -1209,7 +1209,11 @@
       }
 
       function showUnits(grade) {
-        _proceedToUnits(currentUser ? currentUser.grade_level : grade);
+        if (!currentUser) {
+          showAuthModal('login');
+          return;
+        }
+        _proceedToUnits(currentUser.grade_level || grade);
       }
 
       const SEMESTER_CONFIG = {
