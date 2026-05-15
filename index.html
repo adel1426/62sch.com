@@ -338,6 +338,16 @@
         background: rgba(239, 68, 68, 0.08);
       }
 
+      @keyframes nextBlink {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.65; transform: scale(0.97); }
+      }
+
+      @keyframes timerPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.12); }
+      }
+
       .progress-ring {
         transition: stroke-dashoffset 0.6s ease;
       }
@@ -1009,7 +1019,7 @@
             >
               <div class="flex items-center justify-between mb-5 md:mb-8">
                 <button
-                  onclick="goBack('lessons')"
+                  onclick="stopQuizTimer();goBack('lessons')"
                   class="back-btn flex items-center gap-1 text-sm px-3 py-2 rounded-xl"
                 >
                   <i
@@ -1026,6 +1036,7 @@
                   السؤال <span id="current-q">1</span> من
                   <span id="total-q">5</span>
                 </div>
+                <div id="quiz-timer" style="font-size:1rem;font-weight:700;color:#7C3AED;min-width:50px;text-align:center;">٣:٠٠</div>
               </div>
               <div
                 id="quiz-progress-bar"
@@ -1621,14 +1632,153 @@
         scrollAppTop();
       }
 
+      // ── الأصوات ─────────────────────────────────────────────
+      const _ac = new (window.AudioContext || window.webkitAudioContext)();
+
+      function playCorrectSound() {
+        const t = _ac.currentTime;
+        const o = _ac.createOscillator();
+        const g = _ac.createGain();
+        o.connect(g); g.connect(_ac.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(523, t);
+        o.frequency.setValueAtTime(659, t + 0.12);
+        o.frequency.setValueAtTime(784, t + 0.24);
+        g.gain.setValueAtTime(0.35, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+        o.start(t); o.stop(t + 0.6);
+      }
+
+      function playWrongSound() {
+        const t = _ac.currentTime;
+        const o = _ac.createOscillator();
+        const g = _ac.createGain();
+        o.connect(g); g.connect(_ac.destination);
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(300, t);
+        o.frequency.exponentialRampToValueAtTime(150, t + 0.4);
+        g.gain.setValueAtTime(0.3, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+        o.start(t); o.stop(t + 0.4);
+      }
+
+      function playTimeoutSound() {
+        const t = _ac.currentTime;
+        [400, 350, 300].forEach((freq, i) => {
+          const o = _ac.createOscillator();
+          const g = _ac.createGain();
+          o.connect(g); g.connect(_ac.destination);
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, t + i * 0.18);
+          g.gain.setValueAtTime(0.25, t + i * 0.18);
+          g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.18 + 0.15);
+          o.start(t + i * 0.18); o.stop(t + i * 0.18 + 0.15);
+        });
+      }
+
+      // ── المؤقت ──────────────────────────────────────────────
+      const QUESTION_TIME = 180; // 3 دقائق
+
+      function stopQuizTimer() {
+        if (window._quizTimerID) { clearInterval(window._quizTimerID); window._quizTimerID = null; }
+      }
+
+      function startQuizTimer() {
+        stopQuizTimer();
+        let remaining = QUESTION_TIME;
+        updateTimerDisplay(remaining);
+        window._quizTimerID = setInterval(() => {
+          remaining--;
+          updateTimerDisplay(remaining);
+          if (remaining <= 0) {
+            stopQuizTimer();
+            onTimerExpired();
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay(sec) {
+        const el = document.getElementById('quiz-timer');
+        if (!el) return;
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        el.textContent = `${toArabicDigits(m)}:${toArabicDigits(String(s).padStart(2,'0'))}`;
+        const urgent = sec <= 30;
+        el.style.color = urgent ? '#ef4444' : '#7C3AED';
+        el.style.fontWeight = urgent ? '900' : '700';
+        el.style.animation = urgent ? 'timerPulse 0.8s ease-in-out infinite' : 'none';
+      }
+
+      function onTimerExpired() {
+        const state = window._quizState;
+        if (state.finished) return;
+        const q = state.quiz[state.currentQuestion];
+
+        playTimeoutSound();
+
+        // سجّل الإجابة كخاطئة (لم يختر)
+        state.answers.push({
+          question: q.q,
+          userAnswer: '—',
+          correctAnswer: q.options[q.answer],
+          isCorrect: false,
+          explanation: q.explanation || "",
+          image: q.image || null,
+        });
+
+        // أظهر الإجابات
+        document.querySelectorAll(".quiz-option").forEach((el, i) => {
+          el.onclick = null;
+          el.style.cursor = "default";
+          if (i === q.answer) el.classList.add("correct");
+        });
+
+        const container = document.getElementById("quiz-question-container");
+
+        // رسالة انتهاء الوقت
+        const timeoutBox = document.createElement("div");
+        timeoutBox.className = "mt-4 p-3 rounded-xl text-sm text-center font-bold";
+        timeoutBox.style.cssText = "background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;";
+        timeoutBox.textContent = "⏰ انتهى الوقت!";
+        container.appendChild(timeoutBox);
+
+        // التغذية الراجعة
+        if (q.explanation) {
+          const expBox = document.createElement("div");
+          expBox.className = "mt-3 p-4 rounded-xl text-sm";
+          expBox.style.cssText = "background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);color:#4B5563;line-height:1.8;";
+          expBox.innerHTML = `<span style="color:#7C3AED;font-weight:700;">💡 التغذية الراجعة:</span> ${toArabicDigits(q.explanation)}`;
+          container.appendChild(expBox);
+        }
+
+        // زر التالي مع وميض
+        _appendNextButton(container, state, true);
+      }
+
+      function _appendNextButton(container, state, blink) {
+        const nextBtn = document.createElement("button");
+        nextBtn.id = "quiz-next-btn";
+        nextBtn.className = "glow-btn w-full mt-6 py-3 px-6 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2";
+        if (blink) nextBtn.style.animation = "nextBlink 0.7s ease-in-out infinite";
+
+        if (state.currentQuestion < state.quiz.length - 1) {
+          nextBtn.innerHTML = '<span>السؤال التالي</span> <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>';
+          nextBtn.onclick = () => { state.currentQuestion++; displayCurrentQuestion(); };
+        } else {
+          nextBtn.innerHTML = '<span>عرض النتائج</span> <i data-lucide="check-circle" style="width:20px;height:20px;"></i>';
+          nextBtn.onclick = () => { state.finished = true; showQuizResults(); };
+        }
+        container.appendChild(nextBtn);
+        lucide.createIcons();
+      }
+
       function displayCurrentQuestion() {
+        stopQuizTimer();
         const state = window._quizState;
         const q = state.quiz[state.currentQuestion];
         const container = document.getElementById("quiz-question-container");
         const pct = ((state.currentQuestion + 1) / state.quiz.length) * 100;
 
-        document.getElementById("current-q").textContent =
-          state.currentQuestion + 1;
         document.getElementById("progress-fill").style.width = pct + "%";
         const progressDiv = document.getElementById("quiz-progress");
         if (progressDiv) {
@@ -1646,16 +1796,19 @@
         html += "</div>";
         container.innerHTML = html;
         lucide.createIcons();
+        startQuizTimer();
       }
 
       function selectAnswer(idx) {
+        stopQuizTimer();
         const state = window._quizState;
         if (state.finished) return;
 
         const q = state.quiz[state.currentQuestion];
         const isCorrect = idx === q.answer;
 
-        if (isCorrect) state.score++;
+        if (isCorrect) { state.score++; playCorrectSound(); }
+        else { playWrongSound(); }
 
         state.answers.push({
           question: q.q,
@@ -1683,28 +1836,7 @@
           container.appendChild(expBox);
         }
 
-        const nextBtn = document.createElement("button");
-        nextBtn.className =
-          "glow-btn w-full mt-6 py-3 px-6 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2";
-
-        if (state.currentQuestion < state.quiz.length - 1) {
-          nextBtn.innerHTML =
-            '<span>السؤال التالي</span> <i data-lucide="arrow-left" style="width:20px;height:20px;"></i>';
-          nextBtn.onclick = () => {
-            state.currentQuestion++;
-            displayCurrentQuestion();
-          };
-        } else {
-          nextBtn.innerHTML =
-            '<span>عرض النتائج</span> <i data-lucide="check-circle" style="width:20px;height:20px;"></i>';
-          nextBtn.onclick = () => {
-            state.finished = true;
-            showQuizResults();
-          };
-        }
-
-        container.appendChild(nextBtn);
-        lucide.createIcons();
+        _appendNextButton(container, state, false);
       }
 
       async function submitScore() {
@@ -1731,6 +1863,7 @@
       }
 
       function showQuizResults() {
+        stopQuizTimer();
         const state = window._quizState;
         if (!state.comprehensive) submitScore();
         const container = document.getElementById("quiz-question-container");
