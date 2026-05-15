@@ -474,9 +474,12 @@
     <!-- ── لوحة التحكم ─────────────────────────────────── -->
     <div id="admin-panel" class="hidden min-h-screen">
       <!-- بانر وضع العرض فقط -->
-      <div id="viewer-banner" class="hidden text-center py-2 text-sm font-bold"
+      <div id="viewer-banner" class="hidden text-center py-2 text-sm font-bold flex items-center justify-center gap-3"
            style="background:rgba(245,158,11,0.12);border-bottom:1px solid rgba(245,158,11,0.3);color:#92400e;font-family:Cairo,sans-serif;position:sticky;top:0;z-index:200;">
         👁 وضع العرض فقط — لا يمكن إجراء تعديلات
+        <button onclick="doLogout()" style="font-size:11px;padding:2px 10px;background:#92400e;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:Cairo,sans-serif;">
+          خروج 🚪
+        </button>
       </div>
       <!-- رأس الصفحة -->
       <div
@@ -1188,6 +1191,10 @@
           err.classList.remove("hidden");
           return;
         }
+        // مسح أي جلسة قديمة قبل الدخول الجديد
+        try { await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' }); } catch(e) {}
+        isViewer = false;
+        csrfToken = '';
         try {
           const r = await fetch(`${API}/auth/login`, {
             method: "POST",
