@@ -967,7 +967,7 @@
               style="color: #2d2640"
             ></h2>
           </div>
-          <div class="grid grid-cols-2 gap-3 md:gap-4" id="units-grid"></div>
+          <div class="flex flex-col gap-2" id="units-grid"></div>
         </div>
       </section>
       <section id="lessons-section" class="px-4 py-8 md:py-12 hidden">
@@ -1217,6 +1217,11 @@
         _proceedToUnits(currentUser ? currentUser.grade_level : grade);
       }
 
+      const SEMESTER_CONFIG = {
+        first:  { s1: [0,1,2,3],     s2: [4,5,6,7,8] },
+        second: { s1: [0,1,2,3,4],   s2: [5,6,7,8,9] },
+      };
+
       async function _proceedToUnits(grade) {
         currentGrade = grade;
         const data = curriculumData[grade];
@@ -1240,27 +1245,54 @@
         const grid = document.getElementById("units-grid");
         grid.innerHTML = "";
 
-        // زر الاختبار الشامل للمرحلة
+        // إزالة أي أزرار قديمة قبل الشبكة
         const oldGradeCompBtn = document.getElementById("grade-comprehensive-btn");
         if (oldGradeCompBtn) oldGradeCompBtn.remove();
-        const gradeCompBtn = document.createElement("button");
-        gradeCompBtn.id = "grade-comprehensive-btn";
-        gradeCompBtn.className = "glow-btn w-full mb-5 py-3 px-5 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2";
-        gradeCompBtn.style.cssText = "background:linear-gradient(135deg,#7C3AED,#EC4899);";
-        gradeCompBtn.innerHTML = '<i data-lucide="zap" style="width:18px;height:18px;"></i> <span>اختبار شامل المرحلة</span>';
-        gradeCompBtn.onclick = () => openComprehensiveQuiz('grade', null);
-        grid.parentElement.insertBefore(gradeCompBtn, grid);
 
-        data.units.forEach((unit, idx) => {
-          const card = document.createElement("div");
-          card.className = "unit-card rounded-2xl p-5";
-          card.innerHTML = `
-          <div class="text-3xl mb-3">${unit.emoji}</div>
-          <h3 class="text-base font-bold mb-1" style="color:#2D2640;">${unit.title}</h3>
-          <p class="text-xs" style="color:#94a3b8;">${unit.lessons.length} دروس</p>
-        `;
-          card.onclick = () => showLessons(idx);
-          grid.appendChild(card);
+        const semCfg = SEMESTER_CONFIG[grade] || { s1: [], s2: [] };
+        const semesters = [
+          { label: 'الفصل الدراسي الأول', units: semCfg.s1, sem: 1 },
+          { label: 'الفصل الدراسي الثاني', units: semCfg.s2, sem: 2 },
+        ];
+
+        semesters.forEach(({ label, units: unitIndices, sem }) => {
+          // عنوان الفصل
+          const hdr = document.createElement("div");
+          hdr.style.cssText = "width:100%;margin:18px 0 10px 0;display:flex;align-items:center;gap:10px;";
+          hdr.innerHTML = `
+            <span style="flex:1;height:2px;background:linear-gradient(90deg,#7C3AED22,#7C3AED);border-radius:2px;"></span>
+            <span style="font-size:1rem;font-weight:800;color:#7C3AED;white-space:nowrap;">${label}</span>
+            <span style="flex:1;height:2px;background:linear-gradient(270deg,#7C3AED22,#7C3AED);border-radius:2px;"></span>
+          `;
+          grid.appendChild(hdr);
+
+          // زر اختبار شامل الفصل
+          const semBtn = document.createElement("button");
+          semBtn.className = "glow-btn w-full mb-4 py-3 px-5 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2";
+          semBtn.style.cssText = sem === 1
+            ? "background:linear-gradient(135deg,#7C3AED,#6366F1);"
+            : "background:linear-gradient(135deg,#EC4899,#7C3AED);";
+          semBtn.innerHTML = `<i data-lucide="zap" style="width:18px;height:18px;"></i> <span>اختبار شامل ${label}</span>`;
+          semBtn.onclick = () => openComprehensiveQuiz('semester', unitIndices);
+          grid.appendChild(semBtn);
+
+          // بطاقات الوحدات
+          const subGrid = document.createElement("div");
+          subGrid.className = "grid grid-cols-2 gap-4 w-full mb-2";
+          unitIndices.forEach(idx => {
+            const unit = data.units[idx];
+            if (!unit) return;
+            const card = document.createElement("div");
+            card.className = "unit-card rounded-2xl p-5";
+            card.innerHTML = `
+              <div class="text-3xl mb-3">${unit.emoji}</div>
+              <h3 class="text-base font-bold mb-1" style="color:#2D2640;">${unit.title}</h3>
+              <p class="text-xs" style="color:#94a3b8;">${unit.lessons.length} دروس</p>
+            `;
+            card.onclick = () => showLessons(idx);
+            subGrid.appendChild(card);
+          });
+          grid.appendChild(subGrid);
         });
 
         showOnlySections(["units-section"]);
@@ -1572,23 +1604,47 @@
 
       async function openComprehensiveQuiz(type, unitIdx) {
         const count = 10;
-        let url = `/api/questions/random?gradeKey=${currentGrade}&count=${count}`;
-        if (type === 'unit' && unitIdx !== null) {
-          url += `&unitIndex=${unitIdx}`;
-        }
         let quizArr = [];
         try {
-          const resp = await fetch(url);
-          if (resp.ok) {
-            const dbQs = await resp.json();
-            if (dbQs.length > 0) {
-              quizArr = dbQs.map((q) => ({
-                q: q.question_text,
-                options: [q.option_a, q.option_b, q.option_c, q.option_d],
-                answer: Number(q.correct_answer),
-                image: (q.image_url && q.image_url !== '—' && q.image_url.trim() !== '') ? q.image_url : null,
-                explanation: q.explanation || null,
-              }));
+          if (type === 'semester' && Array.isArray(unitIdx)) {
+            // جلب أسئلة من كل وحدة في الفصل ثم خلطها
+            const perUnit = Math.ceil(count / unitIdx.length);
+            const allQs = [];
+            for (const uIdx of unitIdx) {
+              const url = `/api/questions/random?gradeKey=${currentGrade}&count=${perUnit}&unitIndex=${uIdx}`;
+              const resp = await fetch(url);
+              if (resp.ok) {
+                const dbQs = await resp.json();
+                allQs.push(...dbQs);
+              }
+            }
+            // خلط وأخذ أول count سؤال
+            for (let i = allQs.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [allQs[i], allQs[j]] = [allQs[j], allQs[i]];
+            }
+            quizArr = allQs.slice(0, count).map((q) => ({
+              q: q.question_text,
+              options: [q.option_a, q.option_b, q.option_c, q.option_d],
+              answer: Number(q.correct_answer),
+              image: (q.image_url && q.image_url !== '—' && q.image_url.trim() !== '') ? q.image_url : null,
+              explanation: q.explanation || null,
+            }));
+          } else {
+            let url = `/api/questions/random?gradeKey=${currentGrade}&count=${count}`;
+            if (type === 'unit' && unitIdx !== null) url += `&unitIndex=${unitIdx}`;
+            const resp = await fetch(url);
+            if (resp.ok) {
+              const dbQs = await resp.json();
+              if (dbQs.length > 0) {
+                quizArr = dbQs.map((q) => ({
+                  q: q.question_text,
+                  options: [q.option_a, q.option_b, q.option_c, q.option_d],
+                  answer: Number(q.correct_answer),
+                  image: (q.image_url && q.image_url !== '—' && q.image_url.trim() !== '') ? q.image_url : null,
+                  explanation: q.explanation || null,
+                }));
+              }
             }
           }
         } catch (e) {}
@@ -1604,7 +1660,7 @@
               <div class="text-5xl mb-4">📭</div>
               <h3 class="text-xl font-black mb-2" style="color:#7C3AED;">لا توجد أسئلة بعد</h3>
               <p class="text-sm mb-6" style="color:#64748b;">لم يتم إضافة أسئلة بعد.</p>
-              <button onclick="goBack('${type === 'grade' ? 'units' : 'lessons'}')" class="btn btn-primary px-6 py-2 text-sm"
+              <button onclick="goBack('${(type === 'grade' || type === 'semester') ? 'units' : 'lessons'}')" class="btn btn-primary px-6 py-2 text-sm"
                 style="background:linear-gradient(135deg,#7C3AED,#EC4899);">← رجوع</button>
             </div>`;
           scrollAppTop();
