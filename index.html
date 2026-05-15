@@ -511,6 +511,10 @@
               <span class="text-sm">⭐</span>
               <span id="nav-user-points" class="text-xs font-black" style="color:#4A7C59">0</span>
             </div>
+            <button onclick="showProfileModal()" class="text-xs px-3 py-1 rounded-xl font-bold transition"
+                    style="background:rgba(74,124,89,0.08);color:#4A7C59;border:1px solid rgba(74,124,89,0.2)">
+              ✏️ ملفي
+            </button>
             <button onclick="doLogout()" class="text-xs px-3 py-1 rounded-xl font-bold transition"
                     style="background:rgba(239,68,68,0.08);color:#ef4444;border:1px solid rgba(239,68,68,0.15)">
               خروج
@@ -808,6 +812,46 @@
           </div>
         </div>
       </div>
+
+    <!-- ── مودال تعديل الملف الشخصي ── -->
+    <div id="profile-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4"
+         style="background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);">
+      <div class="w-full max-w-sm rounded-3xl p-6 relative" style="background:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+        <button onclick="closeProfileModal()" style="position:absolute;top:14px;left:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;">✕</button>
+        <h2 class="text-lg font-black mb-5 text-center" style="color:#2d2640;">✏️ تعديل الملف الشخصي</h2>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-bold mb-1 block" style="color:#64748b;">الاسم الكامل</label>
+            <input id="prof-name" type="text" class="w-full rounded-xl px-3 py-2 text-sm"
+              style="border:1.5px solid #e2e8f0;font-family:Cairo,sans-serif;outline:none;" />
+          </div>
+          <div>
+            <label class="text-xs font-bold mb-1 block" style="color:#64748b;">المرحلة الدراسية</label>
+            <select id="prof-grade" class="w-full rounded-xl px-3 py-2 text-sm"
+              style="border:1.5px solid #e2e8f0;font-family:Cairo,sans-serif;outline:none;">
+              <option value="first">الأول متوسط</option>
+              <option value="second">الثاني متوسط</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold mb-1 block" style="color:#64748b;">الفصل</label>
+            <input id="prof-class" type="text" placeholder="مثال: أ، ب، 1، 2" class="w-full rounded-xl px-3 py-2 text-sm"
+              style="border:1.5px solid #e2e8f0;font-family:Cairo,sans-serif;outline:none;" />
+          </div>
+          <div>
+            <label class="text-xs font-bold mb-1 block" style="color:#64748b;">كلمة المرور الجديدة <span style="color:#94a3b8;font-weight:400;">(اتركها فارغة إذا لا تريد تغييرها)</span></label>
+            <input id="prof-pass" type="password" placeholder="6 أحرف على الأقل" class="w-full rounded-xl px-3 py-2 text-sm"
+              style="border:1.5px solid #e2e8f0;font-family:Cairo,sans-serif;outline:none;" />
+          </div>
+          <div id="prof-error" class="hidden text-xs text-center rounded-xl p-2" style="background:#fee2e2;color:#ef4444;"></div>
+          <div id="prof-success" class="hidden text-xs text-center rounded-xl p-2" style="background:#dcfce7;color:#16a34a;"></div>
+          <button onclick="saveProfile()" class="w-full py-3 rounded-2xl text-white font-bold text-sm"
+            style="background:linear-gradient(135deg,#4A7C59,#5A8F6A);">
+            💾 حفظ التغييرات
+          </button>
+        </div>
+      </div>
+    </div>
 
       <!-- قسم النتائج الشخصية -->
       <section id="results-section" class="px-4 py-8 hidden" style="background:#fffbf7">
@@ -2364,6 +2408,68 @@
       }
 
       // ── تسجيل خروج ──
+      function showProfileModal() {
+        if (!currentUser) return;
+        document.getElementById('prof-name').value  = currentUser.name || '';
+        document.getElementById('prof-grade').value = currentUser.grade_level || 'first';
+        document.getElementById('prof-class').value = currentUser.class_name || '';
+        document.getElementById('prof-pass').value  = '';
+        document.getElementById('prof-error').classList.add('hidden');
+        document.getElementById('prof-success').classList.add('hidden');
+        document.getElementById('profile-modal').classList.remove('hidden');
+      }
+
+      function closeProfileModal() {
+        document.getElementById('profile-modal').classList.add('hidden');
+      }
+
+      async function saveProfile() {
+        const name       = document.getElementById('prof-name').value.trim();
+        const grade      = document.getElementById('prof-grade').value;
+        const class_name = document.getElementById('prof-class').value.trim();
+        const password   = document.getElementById('prof-pass').value;
+        const errEl      = document.getElementById('prof-error');
+        const okEl       = document.getElementById('prof-success');
+        errEl.classList.add('hidden');
+        okEl.classList.add('hidden');
+
+        if (!name || !class_name) {
+          errEl.textContent = 'الاسم والفصل مطلوبان';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        if (password && password.length < 6) {
+          errEl.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+          errEl.classList.remove('hidden');
+          return;
+        }
+
+        try {
+          const body = { name, grade_level: grade, class_name };
+          if (password) body.password = password;
+          const r = await fetch('/api/auth/profile', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(body),
+          });
+          const d = await r.json();
+          if (d.success) {
+            currentUser = { ...currentUser, ...d.user };
+            updateAuthUI();
+            okEl.textContent = '✅ تم حفظ التغييرات بنجاح';
+            okEl.classList.remove('hidden');
+            setTimeout(() => closeProfileModal(), 1500);
+          } else {
+            errEl.textContent = d.error || 'حدث خطأ';
+            errEl.classList.remove('hidden');
+          }
+        } catch(e) {
+          errEl.textContent = 'خطأ في الاتصال';
+          errEl.classList.remove('hidden');
+        }
+      }
+
       async function doLogout() {
         try {
           await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });

@@ -58,6 +58,7 @@ try {
         case $path === 'auth/register'     && $method === 'POST': handle_register();
         case $path === 'auth/student-login'&& $method === 'POST': handle_student_login();
         case $path === 'auth/csrf'         && $method === 'GET':  handle_csrf_token();
+        case $path === 'auth/profile'      && $method === 'PUT':  handle_profile_update();
 
         // ── الأسئلة ──
         case $path === 'questions/counts'  && $method === 'GET':  handle_questions_counts();

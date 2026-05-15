@@ -1,7 +1,6 @@
 <?php
 
 function handle_login(): void {
-    rate_limit('admin_login', 30, 1800);
     $body = read_json_body();
     $u = $body['username'] ?? '';
     $p = $body['password'] ?? '';
@@ -58,7 +57,6 @@ function handle_me(): void {
 }
 
 function handle_register(): void {
-    rate_limit('register', 5, 3600);
     $b          = read_json_body();
     $name       = trim($b['name'] ?? '');
     $username   = strtolower(trim($b['username'] ?? ''));
@@ -72,10 +70,6 @@ function handle_register(): void {
     if (!in_array($grade, ['first', 'second'])) {
         send_json(['error' => 'المرحلة الدراسية غير صحيحة'], 400);
     }
-    if (mb_strlen($password) < 6) {
-        send_json(['error' => 'كلمة المرور يجب أن تكون ٦ أحرف على الأقل'], 400);
-    }
-
     $check = db()->prepare("SELECT id FROM users WHERE username = ?");
     $check->execute([$username]);
     if ($check->fetch()) {
@@ -104,8 +98,48 @@ function handle_register(): void {
     ]], 201);
 }
 
+function handle_profile_update(): void {
+    start_session_safe();
+    $studentId = $_SESSION['student_id'] ?? null;
+    if (!$studentId) { send_json(['error' => 'غير مصرح'], 401); }
+
+    $b          = read_json_body();
+    $name       = trim($b['name'] ?? '');
+    $grade      = $b['grade_level'] ?? '';
+    $class_name = trim($b['class_name'] ?? '');
+    $password   = $b['password'] ?? '';
+
+    if (!$name) { send_json(['error' => 'الاسم مطلوب'], 400); }
+    if (!in_array($grade, ['first', 'second'])) { send_json(['error' => 'المرحلة غير صحيحة'], 400); }
+    if (!$class_name) { send_json(['error' => 'الفصل مطلوب'], 400); }
+
+    if ($password !== '') {
+        if (mb_strlen($password) < 6) { send_json(['error' => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'], 400); }
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = db()->prepare("UPDATE users SET name=?, grade_level=?, class_name=?, password_hash=? WHERE id=?");
+        $stmt->execute([$name, $grade, $class_name, $hash, $studentId]);
+    } else {
+        $stmt = db()->prepare("UPDATE users SET name=?, grade_level=?, class_name=? WHERE id=?");
+        $stmt->execute([$name, $grade, $class_name, $studentId]);
+    }
+
+    $_SESSION['student_grade'] = $grade;
+    $_SESSION['student_name']  = $name;
+
+    $stmt2 = db()->prepare("SELECT id, name, grade_level, class_name, total_points FROM users WHERE id=?");
+    $stmt2->execute([$studentId]);
+    $u = $stmt2->fetch();
+
+    send_json(['success' => true, 'user' => [
+        'id'           => (int)$u['id'],
+        'name'         => $u['name'],
+        'grade_level'  => $u['grade_level'],
+        'class_name'   => $u['class_name'],
+        'total_points' => (int)$u['total_points'],
+    ]]);
+}
+
 function handle_student_login(): void {
-    rate_limit('student_login', 30, 1800);
     $b        = read_json_body();
     $username = strtolower(trim($b['username'] ?? ''));
     $password = $b['password'] ?? '';
