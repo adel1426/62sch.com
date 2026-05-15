@@ -53,7 +53,7 @@
       }
 
       .hero-pattern {
-        background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        background: linear-gradient(135deg, #4A7C59 0%, #5A8F6A 100%);
         position: relative;
         overflow: hidden;
         border-radius: 0 0 40px 40px;
@@ -162,7 +162,7 @@
 
       .glow-btn {
         transition: all 0.3s ease;
-        background: linear-gradient(135deg, #7c3aed, #ec4899);
+        background: linear-gradient(135deg, #4A7C59, #5A8F6A);
         box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
         min-height: 52px;
       }
@@ -210,7 +210,7 @@
           135deg,
           #6d28d9 0%,
           #9333ea 45%,
-          #ec4899 100%
+          #5A8F6A 100%
         );
         box-shadow:
           0 6px 32px rgba(124, 58, 237, 0.55),
@@ -280,7 +280,7 @@
         border-radius: 10px;
       }
       .back-btn:hover {
-        color: #7c3aed;
+        color: #4A7C59;
       }
       .back-btn:active {
         background: rgba(124, 58, 237, 0.06);
@@ -326,7 +326,7 @@
         background: rgba(124, 58, 237, 0.06);
       }
       .quiz-option.selected {
-        border-color: #7c3aed;
+        border-color: #4A7C59;
         background: rgba(124, 58, 237, 0.12);
       }
       .quiz-option.correct {
@@ -488,12 +488,12 @@
               class="w-full h-full object-cover"
             />
           </div>
-          <h1 class="text-base font-black" style="color: #7c3aed">
+          <h1 class="text-base font-black" style="color: #4A7C59">
             منصة قطرة لون
           </h1>
           <div
             class="w-12 h-12 md:w-14 md:h-14 rounded-xl flex-shrink-0 flex items-center justify-center text-xs font-bold text-center"
-            style="background:#f3f0ff;color:#7C3AED;border:2px dashed #7C3AED;line-height:1.2;"
+            style="background:#f3f0ff;color:#4A7C59;border:2px dashed #4A7C59;line-height:1.2;"
           >هنا شعار المدرسة</div>
         </div>
         <!-- شريط معلومات المستخدم -->
@@ -502,14 +502,14 @@
           <div class="flex items-center gap-2">
             <span class="text-lg">👩🏻‍🎓</span>
             <div>
-              <p id="nav-user-name" class="text-xs font-black" style="color:#7c3aed"></p>
+              <p id="nav-user-name" class="text-xs font-black" style="color:#4A7C59"></p>
               <p id="nav-user-grade" class="text-[10px]" style="color:#94a3b8"></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-1 px-2 py-1 rounded-xl" style="background:rgba(124,58,237,0.08)">
               <span class="text-sm">⭐</span>
-              <span id="nav-user-points" class="text-xs font-black" style="color:#7c3aed">0</span>
+              <span id="nav-user-points" class="text-xs font-black" style="color:#4A7C59">0</span>
             </div>
             <button onclick="doLogout()" class="text-xs px-3 py-1 rounded-xl font-bold transition"
                     style="background:rgba(239,68,68,0.08);color:#ef4444;border:1px solid rgba(239,68,68,0.15)">
@@ -521,12 +521,12 @@
         <div id="guest-bar" class="hidden max-w-lg mx-auto px-4 pb-2 flex items-center justify-end gap-2">
           <button onclick="showAuthModal('login')"
                   class="text-xs px-3 py-1.5 rounded-xl font-bold transition"
-                  style="background:rgba(124,58,237,0.08);color:#7c3aed;border:1px solid rgba(124,58,237,0.2)">
+                  style="background:rgba(124,58,237,0.08);color:#4A7C59;border:1px solid rgba(124,58,237,0.2)">
             دخول
           </button>
           <button onclick="showAuthModal('register')"
                   class="text-xs px-3 py-1.5 rounded-xl font-bold text-white transition"
-                  style="background:linear-gradient(135deg,#7c3aed,#ec4899)">
+                  style="background:linear-gradient(135deg,#4A7C59,#5A8F6A)">
             تسجيل مجاني 🚀
           </button>
         </div>
@@ -587,7 +587,7 @@
             <button id="continue-learning-btn"
                     onclick="continueLearning()"
                     class="hidden w-full mt-4 py-2.5 px-4 rounded-2xl text-sm font-black transition"
-                    style="background:rgba(255,255,255,0.9);color:#7c3aed;border:1px solid rgba(255,255,255,0.35)">
+                    style="background:rgba(255,255,255,0.9);color:#4A7C59;border:1px solid rgba(255,255,255,0.35)">
               تابعي من حيث توقفتِ
             </button>
           </div>
@@ -646,7 +646,7 @@
             </h2>
             <span
               class="text-xs font-semibold px-2 py-1 rounded-full"
-              style="background: rgba(124, 58, 237, 0.08); color: #7c3aed"
+              style="background: rgba(124, 58, 237, 0.08); color: #4A7C59"
               >أعلى 5 طالبات</span
             >
           </div>
@@ -695,7 +695,7 @@
           <div class="flex" style="border-bottom:1px solid rgba(124,58,237,0.1)">
             <button id="tab-register" onclick="switchAuthTab('register')"
                     class="flex-1 py-4 text-sm font-black transition"
-                    style="color:#7c3aed;border-bottom:2px solid #7c3aed">
+                    style="color:#4A7C59;border-bottom:2px solid #4A7C59">
               تسجيل جديد
             </button>
             <button id="tab-login" onclick="switchAuthTab('login')"
@@ -815,7 +815,7 @@
           <div class="flex items-center gap-3 mb-6">
             <button onclick="goHome()" class="w-9 h-9 flex items-center justify-center rounded-xl transition"
                     style="background:rgba(124,58,237,0.08)">
-              <i data-lucide="arrow-right" style="width:18px;height:18px;color:#7c3aed"></i>
+              <i data-lucide="arrow-right" style="width:18px;height:18px;color:#4A7C59"></i>
             </button>
             <h2 class="text-2xl font-black" style="color:#2d2640">📊 نتائجي</h2>
           </div>
@@ -855,7 +855,7 @@
               ></div>
               <div class="flex items-center justify-between relative z-10">
                 <div>
-                  <h3 class="text-2xl font-black mb-1" style="color: #8a2387">
+                  <h3 class="text-2xl font-black mb-1" style="color: #3a6b49">
                     الأول متوسط
                   </h3>
                   <p
@@ -879,7 +879,7 @@
                 class="mt-5 inline-flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl"
                 style="
                   background: rgba(255, 255, 255, 0.4);
-                  color: #8a2387;
+                  color: #3a6b49;
                   backdrop-filter: blur(4px);
                 "
               >
@@ -1026,12 +1026,12 @@
                 <div
                   id="quiz-progress"
                   class="text-sm font-semibold"
-                  style="color: #7c3aed"
+                  style="color: #4A7C59"
                 >
                   السؤال <span id="current-q">1</span> من
                   <span id="total-q">5</span>
                 </div>
-                <div id="quiz-timer" style="font-size:1rem;font-weight:700;color:#7C3AED;min-width:50px;text-align:center;">٣:٠٠</div>
+                <div id="quiz-timer" style="font-size:1rem;font-weight:700;color:#4A7C59;min-width:50px;text-align:center;">٣:٠٠</div>
               </div>
               <div
                 id="quiz-progress-bar"
@@ -1043,7 +1043,7 @@
                   class="h-2 rounded-full transition-all duration-300"
                   style="
                     width: 20%;
-                    background: linear-gradient(135deg, #7c3aed, #ec4899);
+                    background: linear-gradient(135deg, #4A7C59, #5A8F6A);
                   "
                 ></div>
               </div>
@@ -1255,9 +1255,9 @@
           const hdr = document.createElement("div");
           hdr.style.cssText = "width:100%;margin:18px 0 10px 0;display:flex;align-items:center;gap:10px;";
           hdr.innerHTML = `
-            <span style="flex:1;height:2px;background:linear-gradient(90deg,#7C3AED22,#7C3AED);border-radius:2px;"></span>
-            <span style="font-size:1rem;font-weight:800;color:#7C3AED;white-space:nowrap;">${label}</span>
-            <span style="flex:1;height:2px;background:linear-gradient(270deg,#7C3AED22,#7C3AED);border-radius:2px;"></span>
+            <span style="flex:1;height:2px;background:linear-gradient(90deg,#4A7C5922,#4A7C59);border-radius:2px;"></span>
+            <span style="font-size:1rem;font-weight:800;color:#4A7C59;white-space:nowrap;">${label}</span>
+            <span style="flex:1;height:2px;background:linear-gradient(270deg,#4A7C5922,#4A7C59);border-radius:2px;"></span>
           `;
           grid.appendChild(hdr);
 
@@ -1265,8 +1265,8 @@
           const semBtn = document.createElement("button");
           semBtn.className = "glow-btn w-full mb-4 py-3 px-5 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2";
           semBtn.style.cssText = sem === 1
-            ? "background:linear-gradient(135deg,#7C3AED,#6366F1);"
-            : "background:linear-gradient(135deg,#EC4899,#7C3AED);";
+            ? "background:linear-gradient(135deg,#4A7C59,#5A8F6A);"
+            : "background:linear-gradient(135deg,#5A8F6A,#4A7C59);";
           semBtn.innerHTML = `<i data-lucide="zap" style="width:18px;height:18px;"></i> <span>اختبار شامل ${label}</span>`;
           semBtn.onclick = () => openComprehensiveQuiz('semester', unitIndices);
           grid.appendChild(semBtn);
@@ -1305,7 +1305,7 @@
         // زر الاختبار الشامل للوحدة
         const unitCompBtn = document.createElement("button");
         unitCompBtn.className = "glow-btn w-full mb-4 py-3 px-5 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2";
-        unitCompBtn.style.cssText = "background:linear-gradient(135deg,#EC4899,#7C3AED);";
+        unitCompBtn.style.cssText = "background:linear-gradient(135deg,#5A8F6A,#4A7C59);";
         unitCompBtn.innerHTML = '<i data-lucide="zap" style="width:18px;height:18px;"></i> <span>اختبار شامل الوحدة</span>';
         unitCompBtn.onclick = () => openComprehensiveQuiz('unit', unitIdx);
         grid.appendChild(unitCompBtn);
@@ -1348,7 +1348,7 @@
               const n = counts[`${unitIdx}|${idx}`] || 0;
               el.innerHTML =
                 n > 0
-                  ? `<span style="color:#7C3AED;font-weight:700;">${toArabicDigits(n)}</span> <span>سؤال ✅</span>`
+                  ? `<span style="color:#4A7C59;font-weight:700;">${toArabicDigits(n)}</span> <span>سؤال ✅</span>`
                   : `<span style="color:#f59e0b;font-weight:600;">لا توجد أسئلة بعد</span>`;
             });
           }
@@ -1431,7 +1431,7 @@
             const vidSection = document.createElement("div");
             vidSection.className = "mt-5 space-y-4";
             if (videoUrls.length > 1) {
-              vidSection.innerHTML = `<p class="text-sm font-bold" style="color:#7C3AED;">🎬 فيديوهات الدرس</p>`;
+              vidSection.innerHTML = `<p class="text-sm font-bold" style="color:#4A7C59;">🎬 فيديوهات الدرس</p>`;
             }
 
             videoUrls.forEach((videoUrl, videoIdx) => {
@@ -1442,14 +1442,14 @@
               vidBox.style.cssText = "border:2px solid rgba(124,58,237,0.2);background:rgba(124,58,237,0.04);padding:16px;";
 
               const label = videoUrls.length > 1
-                ? `<p class="text-xs font-bold mb-2" style="color:#7C3AED;">🎬 فيديو ${videoIdx + 1}</p>`
-                : `<p class="text-sm font-bold mb-3" style="color:#7C3AED;">🎬 فيديو الدرس</p>`;
+                ? `<p class="text-xs font-bold mb-2" style="color:#4A7C59;">🎬 فيديو ${videoIdx + 1}</p>`
+                : `<p class="text-sm font-bold mb-3" style="color:#4A7C59;">🎬 فيديو الدرس</p>`;
 
               const ytMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
               if (ytMatch) {
                 vidBox.innerHTML = label + `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;"><iframe src="https://www.youtube.com/embed/${ytMatch[1]}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe></div>`;
               } else {
-                vidBox.innerHTML = label + `<a href="${videoUrl}" target="_blank" rel="noopener" class="glow-btn inline-flex items-center gap-2 px-5 py-2 rounded-xl text-white text-sm font-bold" style="background:linear-gradient(135deg,#7C3AED,#EC4899);">▶ مشاهدة الفيديو</a>`;
+                vidBox.innerHTML = label + `<a href="${videoUrl}" target="_blank" rel="noopener" class="glow-btn inline-flex items-center gap-2 px-5 py-2 rounded-xl text-white text-sm font-bold" style="background:linear-gradient(135deg,#4A7C59,#5A8F6A);">▶ مشاهدة الفيديو</a>`;
               }
 
               if (currentUser) {
@@ -1461,7 +1461,7 @@
                   watchBtn.disabled = true;
                 } else {
                   watchBtn.innerHTML = "📹 أتممتُ مشاهدة الفيديو <span style='opacity:0.7;font-size:0.8em;'>(+٥ نقاط)</span>";
-                  watchBtn.style.cssText = "background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(236,72,153,0.1));color:#7C3AED;border:1px solid rgba(124,58,237,0.25);cursor:pointer;";
+                  watchBtn.style.cssText = "background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(236,72,153,0.1));color:#4A7C59;border:1px solid rgba(124,58,237,0.25);cursor:pointer;";
                   watchBtn.onclick = async () => {
                     watchBtn.disabled = true;
                     try {
@@ -1567,10 +1567,10 @@
           document.getElementById("quiz-question-container").innerHTML = `
             <div class="text-center py-6">
               <div class="text-5xl mb-4">📭</div>
-              <h3 class="text-xl font-black mb-2" style="color:#7C3AED;">لا توجد أسئلة بعد</h3>
+              <h3 class="text-xl font-black mb-2" style="color:#4A7C59;">لا توجد أسئلة بعد</h3>
               <p class="text-sm mb-6" style="color:#64748b;">لم يتم إضافة أسئلة لهذا الدرس من لوحة الإدارة بعد.</p>
               <button onclick="goBack('lessons')" class="btn btn-primary px-6 py-2 text-sm"
-                style="background:linear-gradient(135deg,#7C3AED,#EC4899);">← العودة للدروس</button>
+                style="background:linear-gradient(135deg,#4A7C59,#5A8F6A);">← العودة للدروس</button>
             </div>`;
           scrollAppTop();
           return;
@@ -1653,10 +1653,10 @@
           document.getElementById("quiz-question-container").innerHTML = `
             <div class="text-center py-6">
               <div class="text-5xl mb-4">📭</div>
-              <h3 class="text-xl font-black mb-2" style="color:#7C3AED;">لا توجد أسئلة بعد</h3>
+              <h3 class="text-xl font-black mb-2" style="color:#4A7C59;">لا توجد أسئلة بعد</h3>
               <p class="text-sm mb-6" style="color:#64748b;">لم يتم إضافة أسئلة بعد.</p>
               <button onclick="goBack('${(type === 'grade' || type === 'semester') ? 'units' : 'lessons'}')" class="btn btn-primary px-6 py-2 text-sm"
-                style="background:linear-gradient(135deg,#7C3AED,#EC4899);">← رجوع</button>
+                style="background:linear-gradient(135deg,#4A7C59,#5A8F6A);">← رجوع</button>
             </div>`;
           scrollAppTop();
           return;
@@ -1744,7 +1744,7 @@
         const s = sec % 60;
         el.textContent = `${toArabicDigits(m)}:${toArabicDigits(String(s).padStart(2,'0'))}`;
         const urgent = sec <= 30;
-        el.style.color = urgent ? '#ef4444' : '#7C3AED';
+        el.style.color = urgent ? '#ef4444' : '#4A7C59';
         el.style.fontWeight = urgent ? '900' : '700';
         el.style.animation = urgent ? 'timerPulse 0.8s ease-in-out infinite' : 'none';
       }
@@ -1787,7 +1787,7 @@
           const expBox = document.createElement("div");
           expBox.className = "mt-3 p-4 rounded-xl text-sm";
           expBox.style.cssText = "background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);color:#4B5563;line-height:1.8;";
-          expBox.innerHTML = `<span style="color:#7C3AED;font-weight:700;">💡 التغذية الراجعة:</span> ${toArabicDigits(q.explanation)}`;
+          expBox.innerHTML = `<span style="color:#4A7C59;font-weight:700;">💡 التغذية الراجعة:</span> ${toArabicDigits(q.explanation)}`;
           container.appendChild(expBox);
         }
 
@@ -1872,7 +1872,7 @@
           const expBox = document.createElement("div");
           expBox.className = "mt-4 p-4 rounded-xl text-sm";
           expBox.style.cssText = "background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);color:#4B5563;line-height:1.8;";
-          expBox.innerHTML = `<span style="color:#7C3AED;font-weight:700;">💡 التغذية الراجعة:</span> ${toArabicDigits(q.explanation)}`;
+          expBox.innerHTML = `<span style="color:#4A7C59;font-weight:700;">💡 التغذية الراجعة:</span> ${toArabicDigits(q.explanation)}`;
           container.appendChild(expBox);
         }
 
@@ -1916,8 +1916,8 @@
         <div class="text-center mb-8">
           <div class="text-6xl mb-4">${emoji}</div>
           <h2 class="text-3xl font-black mb-2">النتيجة النهائية</h2>
-          <p class="text-4xl font-bold mb-4" style="color:#7C3AED;">${toArabicDigits(state.score)} / ${toArabicDigits(state.quiz.length)}</p>
-          <p class="text-xl font-bold mb-6" style="color:#EC4899;">${toArabicDigits(pct)}%</p>
+          <p class="text-4xl font-bold mb-4" style="color:#4A7C59;">${toArabicDigits(state.score)} / ${toArabicDigits(state.quiz.length)}</p>
+          <p class="text-xl font-bold mb-6" style="color:#5A8F6A;">${toArabicDigits(pct)}%</p>
           <p class="text-base" style="color:#64748b;">${pct >= 80 ? "ممتاز! أداء رائع جداً 🌟" : pct >= 50 ? "جيد! واصلي التعلم والمراجعة 📚" : "استمري في المحاولة! أنتِ قادرة 💪"}</p>
         </div>
 
@@ -1947,7 +1947,7 @@
         ` : ""}
 
         <div class="flex gap-3">
-          <button onclick="goBack('${backTarget}')" class="flex-1 py-3 px-4 rounded-2xl font-bold transition flex items-center justify-center gap-2" style="background:rgba(124,58,237,0.08);color:#7C3AED;border:1px solid rgba(124,58,237,0.15);">
+          <button onclick="goBack('${backTarget}')" class="flex-1 py-3 px-4 rounded-2xl font-bold transition flex items-center justify-center gap-2" style="background:rgba(124,58,237,0.08);color:#4A7C59;border:1px solid rgba(124,58,237,0.15);">
             <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
             <span>العودة</span>
           </button>
@@ -1963,7 +1963,7 @@
         const progressDiv = document.getElementById("quiz-progress");
         if (progressDiv) {
           progressDiv.innerHTML =
-            '<span class="font-bold" style="color:#7C3AED;">✓ انتهى الاختبار</span>';
+            '<span class="font-bold" style="color:#4A7C59;">✓ انتهى الاختبار</span>';
         }
         lucide.createIcons();
       }
@@ -1983,7 +1983,7 @@
         container.innerHTML = `
           <div class="mb-6 text-center">
             <div class="text-5xl mb-3">💡</div>
-            <h2 class="text-2xl font-black mb-2" style="color:#7C3AED;">مراجعة الأخطاء</h2>
+            <h2 class="text-2xl font-black mb-2" style="color:#4A7C59;">مراجعة الأخطاء</h2>
             <p class="text-sm" style="color:#64748b;">راجعي السؤال، إجابتك، والإجابة الصحيحة قبل إعادة المحاولة.</p>
           </div>
           <div class="quiz-results-scroll space-y-3 mb-6 max-h-96 overflow-y-auto pr-1">
@@ -2000,7 +2000,7 @@
           </div>
           <div class="flex gap-3">
             <button onclick="showQuizResults()" class="flex-1 py-3 px-4 rounded-2xl font-bold transition flex items-center justify-center gap-2"
-                    style="background:rgba(124,58,237,0.08);color:#7C3AED;border:1px solid rgba(124,58,237,0.15);">
+                    style="background:rgba(124,58,237,0.08);color:#4A7C59;border:1px solid rgba(124,58,237,0.15);">
               <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
               <span>النتيجة</span>
             </button>
@@ -2074,7 +2074,7 @@
             </div>
           </div>
           <div class="text-left flex-shrink-0">
-            <div class="font-black text-lg" style="color:#7C3AED;">${toArabicDigits(r.pct)}%</div>
+            <div class="font-black text-lg" style="color:#4A7C59;">${toArabicDigits(r.pct)}%</div>
             <div class="text-xs" style="color:#94a3b8;">${toArabicDigits(r.total_score)} / ${toArabicDigits(r.total_possible)}</div>
           </div>
         </div>
@@ -2279,10 +2279,10 @@
         document.getElementById('form-register').classList.toggle('hidden', !isRegister);
         document.getElementById('form-login').classList.toggle('hidden', isRegister);
         document.getElementById('tab-register').style.cssText =
-          isRegister ? 'color:#7c3aed;border-bottom:2px solid #7c3aed;flex:1;padding:1rem;font-size:.875rem;font-weight:900;transition:all .2s'
+          isRegister ? 'color:#4A7C59;border-bottom:2px solid #4A7C59;flex:1;padding:1rem;font-size:.875rem;font-weight:900;transition:all .2s'
                      : 'color:#94a3b8;border-bottom:2px solid transparent;flex:1;padding:1rem;font-size:.875rem;font-weight:900;transition:all .2s';
         document.getElementById('tab-login').style.cssText =
-          !isRegister ? 'color:#7c3aed;border-bottom:2px solid #7c3aed;flex:1;padding:1rem;font-size:.875rem;font-weight:900;transition:all .2s'
+          !isRegister ? 'color:#4A7C59;border-bottom:2px solid #4A7C59;flex:1;padding:1rem;font-size:.875rem;font-weight:900;transition:all .2s'
                       : 'color:#94a3b8;border-bottom:2px solid transparent;flex:1;padding:1rem;font-size:.875rem;font-weight:900;transition:all .2s';
       }
 
@@ -2409,7 +2409,7 @@
         let html = `
           <!-- بطاقة الإنجاز الكلي -->
           <div class="mb-5 rounded-3xl p-6 text-white overflow-hidden relative"
-               style="background:linear-gradient(135deg,#7c3aed 0%,#ec4899 100%)">
+               style="background:linear-gradient(135deg,#4A7C59 0%,#5A8F6A 100%)">
             <div class="absolute inset-0" style="background:radial-gradient(circle at 85% 15%,rgba(255,255,255,0.15) 0%,transparent 50%)"></div>
             <div class="relative z-10">
               <div class="flex items-center justify-between mb-4">
@@ -2432,7 +2432,7 @@
           <!-- إحصائيات -->
           <div class="grid grid-cols-3 gap-2 mb-6">
             <div class="rounded-2xl p-3 text-center" style="background:white;border:1px solid rgba(124,58,237,0.08);box-shadow:0 2px 8px rgba(0,0,0,0.04)">
-              <p class="text-2xl font-black" style="color:#7c3aed">${toArabicDigits(done)}</p>
+              <p class="text-2xl font-black" style="color:#4A7C59">${toArabicDigits(done)}</p>
               <p class="text-xs text-slate-500 mt-1">درس مكتمل ✅</p>
             </div>
             <div class="rounded-2xl p-3 text-center" style="background:white;border:1px solid rgba(16,185,129,0.1);box-shadow:0 2px 8px rgba(0,0,0,0.04)">
@@ -2440,7 +2440,7 @@
               <p class="text-xs text-slate-500 mt-1">فيديو شاهدتِه 📹</p>
             </div>
             <div class="rounded-2xl p-3 text-center" style="background:white;border:1px solid rgba(236,72,153,0.08);box-shadow:0 2px 8px rgba(0,0,0,0.04)">
-              <p class="text-2xl font-black" style="color:#ec4899">${toArabicDigits(currentUser.total_points)}</p>
+              <p class="text-2xl font-black" style="color:#5A8F6A">${toArabicDigits(currentUser.total_points)}</p>
               <p class="text-xs text-slate-500 mt-1">نقطة مكتسبة ⭐</p>
             </div>
           </div>
@@ -2461,10 +2461,10 @@
                     <span class="text-xl">${unit.emoji}</span>
                     <span class="font-black text-sm" style="color:#2d2640">${unit.title}</span>
                   </div>
-                  <span class="text-xs font-black" style="color:${uPct >= 100 ? '#16a34a' : '#7c3aed'}">${uPct >= 100 ? '✅ مكتملة' : toArabicDigits(uDone) + '/' + toArabicDigits(uTotal)}</span>
+                  <span class="text-xs font-black" style="color:${uPct >= 100 ? '#16a34a' : '#4A7C59'}">${uPct >= 100 ? '✅ مكتملة' : toArabicDigits(uDone) + '/' + toArabicDigits(uTotal)}</span>
                 </div>
                 <div class="w-full rounded-full" style="height:6px;background:rgba(124,58,237,0.1)">
-                  <div class="rounded-full h-full" style="width:${uPct}%;background:${uPct >= 100 ? '#16a34a' : 'linear-gradient(90deg,#7c3aed,#ec4899)'};transition:width 1s ease"></div>
+                  <div class="rounded-full h-full" style="width:${uPct}%;background:${uPct >= 100 ? '#16a34a' : 'linear-gradient(90deg,#4A7C59,#5A8F6A)'};transition:width 1s ease"></div>
                 </div>
               </div>
               <div class="divide-y" style="border-top:1px solid rgba(124,58,237,0.06)">
@@ -2491,7 +2491,7 @@
       function showToastMsg(msg) {
         const t = document.createElement('div');
         t.className = 'fixed top-20 left-1/2 z-[9999] px-5 py-3 rounded-2xl text-white text-sm font-bold shadow-xl fade-in';
-        t.style.cssText = 'transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#ec4899);max-width:320px;text-align:center';
+        t.style.cssText = 'transform:translateX(-50%);background:linear-gradient(135deg,#4A7C59,#5A8F6A);max-width:320px;text-align:center';
         t.textContent = msg;
         document.body.appendChild(t);
         setTimeout(() => t.remove(), 3000);
@@ -2641,7 +2641,7 @@
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#7C3AED"
+              stroke="#4A7C59"
               stroke-width="2.5"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -2650,7 +2650,7 @@
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
           </div>
-          <span class="text-[10px] font-bold" style="color: #7c3aed"
+          <span class="text-[10px] font-bold" style="color: #4A7C59"
             >الرئيسية</span
           >
         </button>
